@@ -63,6 +63,75 @@
       opacity: 1;
     }
 
+    /* Modal arka plan */
+    #password-modal {
+      display: none; /* gizli başlar */
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(230, 0, 115, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 10001;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Modal kutu */
+    #password-modal .modal-content {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #e60073;
+      width: 320px;
+      max-width: 90%;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+    }
+
+    #password-modal h2 {
+      margin-top: 0;
+      color: #e60073;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #password-input {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 1.2rem;
+      border: 2px solid #e60073;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+    #password-input:focus {
+      border-color: #ff1493;
+    }
+
+    #password-submit {
+      margin-top: 15px;
+      background: #e60073;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+    #password-submit:hover {
+      background: #ff1493;
+    }
+
+    #password-error {
+      color: #cc0044;
+      margin-top: 10px;
+      min-height: 20px;
+      font-weight: bold;
+    }
+
     /* Kalp animasyonları */
     .hearts {
       position: absolute;
@@ -209,91 +278,16 @@
   <!-- Bakım Modu Butonu -->
   <button id="maintenance-btn" title="Bakım Modunu Aç/Kapat">Bakım Modu</button>
 
+  <!-- Şifre Modal -->
+  <div id="password-modal">
+    <div class="modal-content">
+      <h2>Bakım Modu Şifresi</h2>
+      <input type="password" id="password-input" placeholder="Şifreyi giriniz..." />
+      <button id="password-submit">Onayla</button>
+      <div id="password-error"></div>
+    </div>
+  </div>
+
   <script>
     // Kalp animasyonu
-    const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️'];
-    const container = document.getElementById('hearts-container');
-
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-      heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-      heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-      container.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 10000);
-    }
-
-    setInterval(createHeart, 300);
-
-    // Audio kontrolleri
-    const audio = document.getElementById('background-music');
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const muteBtn = document.getElementById('mute-btn');
-
-    playPauseBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play();
-        playPauseBtn.textContent = '⏸️';
-      } else {
-        audio.pause();
-        playPauseBtn.textContent = '▶️';
-      }
-    });
-
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      muteBtn.textContent = audio.muted ? '🔇' : '🔊';
-    });
-
-    // Bakım modu fonksiyonları
-    const maintenanceBtn = document.getElementById('maintenance-btn');
-    const maintenanceOverlay = document.getElementById('maintenance-overlay');
-    const siteContent = document.body;
-
-    const isMaintenance = localStorage.getItem('maintenanceMode') === 'true';
-
-    function enableMaintenance() {
-      // Tüm body içeriğini gizle ve overlay göster
-      siteContent.style.display = 'none';
-      maintenanceOverlay.style.display = 'flex';
-      maintenanceBtn.style.display = 'none'; // butonu gizle
-      localStorage.setItem('maintenanceMode', 'true');
-    }
-
-    function disableMaintenance() {
-      siteContent.style.display = 'block';
-      maintenanceOverlay.style.display = 'none';
-      maintenanceBtn.style.display = 'block'; // butonu göster
-      localStorage.setItem('maintenanceMode', 'false');
-    }
-
-    if (isMaintenance) {
-      enableMaintenance();
-    }
-
-    maintenanceBtn.addEventListener('click', () => {
-      const password = prompt('Bakım modunu açmak/kapatmak için şifreyi giriniz:');
-      if (!password) return;
-
-      const correctPassword = 'sifre123'; // buraya istediğin şifreyi yaz
-
-      if (password === correctPassword) {
-        if (localStorage.getItem('maintenanceMode') === 'true') {
-          disableMaintenance();
-          alert('Bakım modu kapatıldı, site aktif.');
-        } else {
-          enableMaintenance();
-          alert('Bakım modu aktif edildi, site ziyaretçilere kapatıldı.');
-        }
-      } else {
-        alert('Yanlış şifre!');
-      }
-    });
-  </script>
-</body>
-</html>
+    const hearts = ['❤','💕','💞
