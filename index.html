@@ -2,14 +2,14 @@
 <html lang="tr">
 <head>
   <link rel="icon" href="favicon.png" type="image/png" />
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>ZAHİD ❤ REGEN</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #fff0f6;
+      background-color: #ffe6f0; /* Daha belirgin hafif pembe */
       font-family: 'Arial', sans-serif;
     }
 
@@ -42,6 +42,33 @@
       }
     }
 
+    /* Oynatma ve ses butonları için stil */
+    .audio-controls {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      border-radius: 8px;
+      z-index: 10;
+      align-items: center;
+    }
+
+    .btn {
+      cursor: pointer;
+      color: white;
+      font-size: 1.2rem;
+      user-select: none;
+      transition: color 0.3s;
+    }
+
+    .btn:hover {
+      color: #ff69b4;
+    }
+
+    /* Metin ve hover için */
     .text-overlay {
       position: absolute;
       top: 50%;
@@ -52,6 +79,27 @@
       color: #e60073;
       z-index: 1;
       text-shadow: 2px 2px 4px #ffb6c1;
+      display: flex;
+      gap: 10px;
+    }
+
+    .text-part {
+      position: relative;
+      cursor: pointer;
+    }
+
+    /* Görseller için stil */
+    .hover-image {
+      position: absolute;
+      top: -220px; /* Metnin biraz üstüne çıkacak şekilde ayar */
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 5;
     }
   </style>
 </head>
@@ -59,7 +107,24 @@
 
 <div class="hearts" id="hearts-container"></div>
 
-<div class="text-overlay">ZAHİD ❤ REGEN</div>
+<!-- Audio controls -->
+<div class="audio-controls">
+  <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
+  <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
+</div>
+
+<!-- Metin ve hover görseller -->
+<div class="text-overlay">
+  <div class="text-part" id="zahid-text">ZAHİD
+    <img src="b.png" alt="b image" class="hover-image" id="b-image" />
+  </div>
+  <div class="text-part" id="regen-text">❤ REGEN
+    <img src="a.jpg" alt="a image" class="hover-image" id="a-image" />
+  </div>
+</div>
+
+<!-- Audio element -->
+<audio id="background-music" src="music.mp3" loop></audio>
 
 <script>
   const hearts = ['❤','💕','💞','💓','💗','💖','💝'];
@@ -80,8 +145,47 @@
   }
 
   setInterval(createHeart, 300);
+
+  // Audio controls
+  const audio = document.getElementById('background-music');
+  const playPauseBtn = document.getElementById('play-pause-btn');
+  const muteBtn = document.getElementById('mute-btn');
+
+  playPauseBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playPauseBtn.textContent = '⏸️';
+    } else {
+      audio.pause();
+      playPauseBtn.textContent = '▶️';
+    }
+  });
+
+  muteBtn.addEventListener('click', () => {
+    audio.muted = !audio.muted;
+    muteBtn.textContent = audio.muted ? '🔇' : '🔊';
+  });
+
+  // Hover images
+  const zahidText = document.getElementById('zahid-text');
+  const regenText = document.getElementById('regen-text');
+  const bImage = document.getElementById('b-image');
+  const aImage = document.getElementById('a-image');
+
+  zahidText.addEventListener('mouseenter', () => {
+    bImage.style.display = 'block';
+  });
+  zahidText.addEventListener('mouseleave', () => {
+    bImage.style.display = 'none';
+  });
+
+  regenText.addEventListener('mouseenter', () => {
+    aImage.style.display = 'block';
+  });
+  regenText.addEventListener('mouseleave', () => {
+    aImage.style.display = 'none';
+  });
 </script>
 
 </body>
 </html>
-
