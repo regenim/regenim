@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1YZ5KBMR5Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1YZ5KBMR5Z');
+  </script>
+
   <link rel="icon" href="favicon.png" type="image/png" />
   <meta charset="UTF-8" />
   <title>ZAHİD ❤ REGEN</title>
@@ -9,7 +19,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #ffd6e8; /* Daha belirgin pembe arka plan */
+      background-color: #ffd6e8;
       font-family: 'Arial', sans-serif;
     }
 
@@ -42,7 +52,6 @@
       }
     }
 
-    /* Oynatma ve ses butonları için stil */
     .audio-controls {
       position: fixed;
       top: 10px;
@@ -68,7 +77,6 @@
       color: #ff69b4;
     }
 
-    /* Metin */
     .text-overlay {
       position: absolute;
       top: 50%;
@@ -92,19 +100,16 @@
 
 <div class="hearts" id="hearts-container"></div>
 
-<!-- Audio controls -->
 <div class="audio-controls">
   <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
   <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
 </div>
 
-<!-- Metin -->
 <div class="text-overlay">
   <div class="text-part" id="zahid-text">ZAHİD</div>
   <div class="text-part" id="regen-text">❤ REGEN</div>
 </div>
 
-<!-- Audio element -->
 <audio id="background-music" src="music.mp3" loop></audio>
 
 <script>
@@ -127,7 +132,6 @@
 
   setInterval(createHeart, 300);
 
-  // Audio controls
   const audio = document.getElementById('background-music');
   const playPauseBtn = document.getElementById('play-pause-btn');
   const muteBtn = document.getElementById('mute-btn');
