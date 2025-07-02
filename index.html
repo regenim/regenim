@@ -1,1 +1,152 @@
-<!DOCTYPE html>\n<html lang=\"tr\">\n<head>\n  <!-- Google tag (gtag.js) -->\n  <script async src=\"https://www.googletagmanager.com/gtag/js?id=G-1YZ5KBMR5Z\"></script>\n  <script>\n    window.dataLayer = window.dataLayer || [];\n    function gtag(){dataLayer.push(arguments);}\n    gtag('js', new Date());\n\n    gtag('config', 'G-1YZ5KBMR5Z');\n  </script>\n\n  <link rel=\"icon\" href=\"favicon.png\" type=\"image/png\" />\n  <meta charset=\"UTF-8\" />\n  <title>ZAHİD ❤ REGEN</title>\n  <style>\n    body {\n      margin: 0;\n      padding: 0;\n      overflow: hidden;\n      background-color: #ffd6e8; /* Daha belirgin pembe arka plan */\n      font-family: 'Arial', sans-serif;\n    }\n\n    .hearts {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      overflow: hidden;\n      z-index: 0;\n    }\n\n    .heart {\n      position: absolute;\n      font-size: 2rem;\n      color: pink;\n      animation: floatHearts 10s linear infinite;\n    }\n\n    @keyframes floatHearts {\n      0% {\n        transform: translateY(100vh) rotate(0deg);\n        opacity: 0;\n      }\n      20% {\n        opacity: 1;\n      }\n      100% {\n        transform: translateY(-10vh) rotate(360deg);\n        opacity: 0;\n      }\n    }\n\n    /* Oynatma ve ses butonları için stil */\n    .audio-controls {\n      position: fixed;\n      top: 10px;\n      left: 10px;\n      display: flex;\n      gap: 10px;\n      background: rgba(0, 0, 0, 0.5);\n      padding: 5px 10px;\n      border-radius: 8px;\n      z-index: 10;\n      align-items: center;\n    }\n\n    .btn {\n      cursor: pointer;\n      color: white;\n      font-size: 1.2rem;\n      user-select: none;\n      transition: color 0.3s;\n    }\n\n    .btn:hover {\n      color: #ff69b4;\n    }\n\n    /* Metin */\n    .text-overlay {\n      position: absolute;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      font-size: 3rem;\n      font-weight: bold;\n      color: #e60073;\n      z-index: 1;\n      text-shadow: 2px 2px 4px #ffb6c1;\n      display: flex;\n      gap: 10px;\n    }\n\n    .text-part {\n      cursor: default;\n    }\n  </style>\n</head>\n<body>\n\n<div class=\"hearts\" id=\"hearts-container\"></div>\n\n<!-- Audio controls -->\n<div class=\"audio-controls\">\n  <div id=\"play-pause-btn\" class=\"btn\" title=\"Oynat / Duraklat\">▶️</div>\n  <div id=\"mute-btn\" class=\"btn\" title=\"Ses Aç/Kapat\">🔊</div>\n</div>\n\n<!-- Metin -->\n<div class=\"text-overlay\">\n  <div class=\"text-part\" id=\"zahid-text\">ZAHİD</div>\n  <div class=\"text-part\" id=\"regen-text\">❤ REGEN</div>\n</div>\n\n<!-- Audio element -->\n<audio id=\"background-music\" src=\"music.mp3\" loop></audio>\n\n<script>\n  const hearts = ['❤','💕','💞','💓','💗','💖','💝'];\n  const container = document.getElementById('hearts-container');\n\n  function createHeart() {\n    const heart = document.createElement('div');\n    heart.classList.add('heart');\n    heart.style.left = Math.random() * 100 + 'vw';\n    heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';\n    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';\n    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];\n    container.appendChild(heart);\n\n    setTimeout(() => {\n      heart.remove();\n    }, 10000);\n  }\n\n  setInterval(createHeart, 300);\n\n  // Audio controls\n  const audio = document.getElementById('background-music');\n  const playPauseBtn = document.getElementById('play-pause-btn');\n  const muteBtn = document.getElementById('mute-btn');\n\n  playPauseBtn.addEventListener('click', () => {\n    if (audio.paused) {\n      audio.play();\n      playPauseBtn.textContent = '⏸️';\n    } else {\n      audio.pause();\n      playPauseBtn.textContent = '▶️';\n    }\n  });\n\n  muteBtn.addEventListener('click', () => {\n    audio.muted = !audio.muted;\n    muteBtn.textContent = audio.muted ? '🔇' : '🔊';\n  });\n</script>\n\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <meta charset="UTF-8" />
+  <title>ZAHİD ❤ REGEN</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #ffd6e8; /* Daha belirgin pembe arka plan */
+      font-family: 'Arial', sans-serif;
+    }
+
+    .hearts {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 2rem;
+      color: pink;
+      animation: floatHearts 10s linear infinite;
+    }
+
+    @keyframes floatHearts {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Oynatma ve ses butonları için stil */
+    .audio-controls {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      border-radius: 8px;
+      z-index: 10;
+      align-items: center;
+    }
+
+    .btn {
+      cursor: pointer;
+      color: white;
+      font-size: 1.2rem;
+      user-select: none;
+      transition: color 0.3s;
+    }
+
+    .btn:hover {
+      color: #ff69b4;
+    }
+
+    /* Metin */
+    .text-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      font-weight: bold;
+      color: #e60073;
+      z-index: 1;
+      text-shadow: 2px 2px 4px #ffb6c1;
+      display: flex;
+      gap: 10px;
+    }
+
+    .text-part {
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+<div class="hearts" id="hearts-container"></div>
+
+<!-- Audio controls -->
+<div class="audio-controls">
+  <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
+  <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
+</div>
+
+<!-- Metin -->
+<div class="text-overlay">
+  <div class="text-part" id="zahid-text">ZAHİD</div>
+  <div class="text-part" id="regen-text">❤ REGEN</div>
+</div>
+
+<!-- Audio element -->
+<audio id="background-music" src="music.mp3" loop></audio>
+
+<script>
+  const hearts = ['❤','💕','💞','💓','💗','💖','💝'];
+  const container = document.getElementById('hearts-container');
+
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    container.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 10000);
+  }
+
+  setInterval(createHeart, 300);
+
+  // Audio controls
+  const audio = document.getElementById('background-music');
+  const playPauseBtn = document.getElementById('play-pause-btn');
+  const muteBtn = document.getElementById('mute-btn');
+
+  playPauseBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playPauseBtn.textContent = '⏸️';
+    } else {
+      audio.pause();
+      playPauseBtn.textContent = '▶️';
+    }
+  });
+
+  muteBtn.addEventListener('click', () => {
+    audio.muted = !audio.muted;
+    muteBtn.textContent = audio.muted ? '🔇' : '🔊';
+  });
+</script>
+
+</body>
+</html>
