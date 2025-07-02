@@ -1,41 +1,82 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WBRMS3P4');</script>
+  <!-- End Google Tag Manager -->
+  <link rel="icon" href="favicon.png" type="image/png" />
   <meta charset="UTF-8" />
   <title>ZAHİD ❤ REGEN</title>
-  <link rel="icon" href="favicon.png" type="image/png" />
   <style>
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: 
-        url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg') no-repeat center center fixed;
+      background-image: url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg');
       background-size: cover;
-      background-color: white;
+      background-position: center;
       font-family: 'Arial', sans-serif;
-      user-select: none;
-      height: 100vh;
       position: relative;
+      height: 100vh;
     }
 
+    /* Bakım Modu kaplaması */
+    #maintenance-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #ffd6e8cc;
+      color: #b30059;
+      font-size: 3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+      user-select: none;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Bakım modu butonu */
+    #maintenance-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #e60073;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      z-index: 10000;
+      user-select: none;
+    }
+    #maintenance-btn:hover {
+      opacity: 1;
+    }
+
+    /* Kalp animasyonları */
     .hearts {
       position: absolute;
       width: 100%;
       height: 100%;
       overflow: hidden;
       z-index: 0;
-      pointer-events: none;
     }
-
     .heart {
       position: absolute;
       font-size: 2rem;
       color: pink;
       animation: floatHearts 10s linear infinite;
-      user-select: none;
     }
-
     @keyframes floatHearts {
       0% {
         transform: translateY(100vh) rotate(0deg);
@@ -50,156 +91,127 @@
       }
     }
 
+    /* Ses kontrol butonları */
     .audio-controls {
       position: fixed;
       top: 10px;
       left: 10px;
       display: flex;
       gap: 15px;
-      background: rgba(255,182,193,0.6);
+      background: rgba(0, 0, 0, 0.5);
       padding: 8px 14px;
-      border-radius: 12px;
-      z-index: 20;
+      border-radius: 8px;
+      z-index: 10;
       align-items: center;
-      user-select: none;
-      box-shadow: 0 0 10px #ffb6c1aa;
     }
-
     .btn {
       cursor: pointer;
       color: #ff69b4;
-      font-size: 2.5rem;
-      transition: color 0.3s, transform 0.2s;
+      font-size: 1.6rem;
       user-select: none;
-      filter: drop-shadow(0 0 2px #ff69b4);
+      transition: color 0.3s;
+      user-select: none;
     }
-
     .btn:hover {
       color: #ff1493;
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 5px #ff1493);
     }
 
+    /* Metin */
     .text-overlay {
-      position: relative;
-      z-index: 10;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      font-size: 5rem;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 6rem;
       font-weight: bold;
       color: #e60073;
+      z-index: 1;
       text-shadow: 2px 2px 4px #ffb6c1;
-    }
-
-    .text-part {
-      position: relative;
-      cursor: pointer;
-    }
-
-    .tooltip {
-      position: absolute;
-      top: 5.5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(15px) scale(1.2);
-      background: #ffb6c1;
-      border-radius: 12px;
-      padding: 12px 18px;
-      box-shadow: 0 4px 12px rgba(255, 182, 193, 0.6);
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-      width: 320px;
-      text-align: center;
-      z-index: 30;
-      font-family: "Segoe UI", sans-serif;
-      font-size: 18px;
-      color: #b30059;
-      font-weight: 600;
-    }
-
-    .text-part:hover .tooltip {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0) scale(1.3);
-      pointer-events: auto;
-    }
-
-    .tooltip img.avatar {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 15px;
-      border: 3px solid #ff66a3;
-    }
-
-    .tooltip img.discord-icon {
-      width: 28px;
-      height: 28px;
-      vertical-align: middle;
-      margin-right: 10px;
-      filter: invert(37%) sepia(56%) saturate(6276%) hue-rotate(318deg) brightness(99%) contrast(101%);
-    }
-
-    .tooltip a {
-      display: inline-block;
-      margin-top: 10px;
-      color: #d43873;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .tooltip div.username {
-      margin-top: 10px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-weight: 700;
+      gap: 15px;
+      user-select: none;
     }
+    .text-part {
+      cursor: default;
+      position: relative;
+      user-select: none;
+    }
+
+    /* Tooltiplar */
+    .text-part[data-tooltip] {
+      position: relative;
+    }
+    .text-part[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e60073cc;
+      color: white;
+      padding: 0.2rem 0.6rem;
+      font-size: 1.4rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      z-index: 10;
+    }
+
+    /* Discord profil resimleri hover animasyonu */
+    .text-part:hover {
+      filter: drop-shadow(0 0 5px #ff1493);
+      transition: filter 0.3s ease;
+    }
+
+    /* Discord logo */
+    .discord-logo {
+      width: 24px;
+      height: 24px;
+      margin-left: 8px;
+      vertical-align: middle;
+      filter: drop-shadow(0 0 3px #ff1493);
+      user-select: none;
+    }
+
   </style>
 </head>
 <body>
 
   <div class="hearts" id="hearts-container"></div>
 
+  <!-- Audio controls -->
   <div class="audio-controls">
     <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
     <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
   </div>
 
+  <!-- Metin -->
   <div class="text-overlay">
-    <div class="text-part" id="zahid">
+    <div class="text-part" id="zahid-text" data-tooltip="Zahid'in Discord Profili">
       ZAHİD
-      <div class="tooltip">
-        <img src="https://cdn.discordapp.com/avatars/461158648526143490/350034907e821d8bcfcb542224f2fb29.png" class="avatar" />
-        <div class="username">
-          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="discord-icon" />
-          shyla31
-        </div>
-        <a href="https://discord.com/users/461158648526143490" target="_blank" rel="noopener noreferrer">Profili Gör</a>
-      </div>
+      <img class="discord-logo" src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord Logo" />
     </div>
-    <div class="text-part" id="regen">
+    <div class="text-part" id="regen-text" data-tooltip="Regen'in Discord Profili">
       ❤ REGEN
-      <div class="tooltip">
-        <img src="https://cdn.discordapp.com/avatars/1208490819045163089/9b0d9fe14fe3ad3b6c32b65d9bc8d2ce.png" class="avatar" />
-        <div class="username">
-          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="discord-icon" />
-          regenxs
-        </div>
-        <a href="https://discord.com/users/1208490819045163089" target="_blank" rel="noopener noreferrer">Profili Gör</a>
-      </div>
+      <img class="discord-logo" src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord Logo" />
     </div>
   </div>
 
+  <!-- Audio element -->
   <audio id="background-music" src="music.mp3" loop></audio>
 
+  <!-- Bakım Modu Ekranı -->
+  <div id="maintenance-overlay">
+    Site şu anda <br><strong>bakımda</strong>. <br>Lütfen daha sonra tekrar deneyiniz.
+  </div>
+
+  <!-- Bakım Modu Butonu -->
+  <button id="maintenance-btn" title="Bakım Modunu Aç/Kapat">Bakım Modu</button>
+
   <script>
-    const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
+    // Kalp animasyonu
+    const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️'];
     const container = document.getElementById('hearts-container');
 
     function createHeart() {
@@ -210,11 +222,15 @@
       heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
       heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
       container.appendChild(heart);
-      setTimeout(() => heart.remove(), 10000);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 10000);
     }
 
     setInterval(createHeart, 300);
 
+    // Audio kontrolleri
     const audio = document.getElementById('background-music');
     const playPauseBtn = document.getElementById('play-pause-btn');
     const muteBtn = document.getElementById('mute-btn');
@@ -233,7 +249,51 @@
       audio.muted = !audio.muted;
       muteBtn.textContent = audio.muted ? '🔇' : '🔊';
     });
-  </script>
 
+    // Bakım modu fonksiyonları
+    const maintenanceBtn = document.getElementById('maintenance-btn');
+    const maintenanceOverlay = document.getElementById('maintenance-overlay');
+    const siteContent = document.body;
+
+    const isMaintenance = localStorage.getItem('maintenanceMode') === 'true';
+
+    function enableMaintenance() {
+      // Tüm body içeriğini gizle ve overlay göster
+      siteContent.style.display = 'none';
+      maintenanceOverlay.style.display = 'flex';
+      maintenanceBtn.style.display = 'none'; // butonu gizle
+      localStorage.setItem('maintenanceMode', 'true');
+    }
+
+    function disableMaintenance() {
+      siteContent.style.display = 'block';
+      maintenanceOverlay.style.display = 'none';
+      maintenanceBtn.style.display = 'block'; // butonu göster
+      localStorage.setItem('maintenanceMode', 'false');
+    }
+
+    if (isMaintenance) {
+      enableMaintenance();
+    }
+
+    maintenanceBtn.addEventListener('click', () => {
+      const password = prompt('Bakım modunu açmak/kapatmak için şifreyi giriniz:');
+      if (!password) return;
+
+      const correctPassword = 'sifre123'; // buraya istediğin şifreyi yaz
+
+      if (password === correctPassword) {
+        if (localStorage.getItem('maintenanceMode') === 'true') {
+          disableMaintenance();
+          alert('Bakım modu kapatıldı, site aktif.');
+        } else {
+          enableMaintenance();
+          alert('Bakım modu aktif edildi, site ziyaretçilere kapatıldı.');
+        }
+      } else {
+        alert('Yanlış şifre!');
+      }
+    });
+  </script>
 </body>
 </html>
