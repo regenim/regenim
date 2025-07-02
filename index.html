@@ -199,29 +199,6 @@
   <audio id="background-music" src="music.mp3" loop></audio>
 
   <script>
-      <script>
-  // GTA HİLESİ STİLİNDE YÖNLENDİRME
-  const secretCode = ['r','e','g','e','n'];
-  let inputSequence = [];
-
-  window.addEventListener('keydown', (e) => {
-    inputSequence.push(e.key.toLowerCase());
-    
-    if (inputSequence.length > secretCode.length) {
-      inputSequence.shift(); // diziyi sabit uzunlukta tut
-    }
-
-    if (inputSequence.join('') === secretCode.join('')) {
-      window.addEventListener('keydown', function handler(ev) {
-        if (ev.key === 'Enter') {
-          window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
-          window.removeEventListener('keydown', handler); // Tek seferlik çalışır
-        }
-      });
-    }
-  });
-</script>
-
     const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
     const container = document.getElementById('hearts-container');
 
