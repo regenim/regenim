@@ -9,14 +9,16 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #ffd6e8;
+      background: 
+        url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg') no-repeat center center fixed;
+      background-size: cover;
+      background-color: white;
       font-family: 'Arial', sans-serif;
       user-select: none;
       height: 100vh;
       position: relative;
     }
 
-    /* Kalpler animasyonu */
     .hearts {
       position: absolute;
       width: 100%;
@@ -48,33 +50,36 @@
       }
     }
 
-    /* Audio kontroller */
     .audio-controls {
       position: fixed;
       top: 10px;
       left: 10px;
       display: flex;
-      gap: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 5px 10px;
-      border-radius: 8px;
+      gap: 15px;
+      background: rgba(255,182,193,0.6);
+      padding: 8px 14px;
+      border-radius: 12px;
       z-index: 20;
       align-items: center;
       user-select: none;
+      box-shadow: 0 0 10px #ffb6c1aa;
     }
 
     .btn {
       cursor: pointer;
-      color: white;
-      font-size: 1.5rem;
-      transition: color 0.3s;
+      color: #ff69b4;
+      font-size: 2.5rem;
+      transition: color 0.3s, transform 0.2s;
+      user-select: none;
+      filter: drop-shadow(0 0 2px #ff69b4);
     }
 
     .btn:hover {
-      color: #ff69b4;
+      color: #ff1493;
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 5px #ff1493);
     }
 
-    /* Metin ve tooltip */
     .text-overlay {
       position: relative;
       z-index: 10;
@@ -82,8 +87,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 15px;
-      font-size: 3rem;
+      gap: 20px;
+      font-size: 2.5rem;
       font-weight: bold;
       color: #e60073;
       text-shadow: 2px 2px 4px #ffb6c1;
@@ -98,33 +103,56 @@
       position: absolute;
       top: 3.5rem;
       left: 50%;
-      transform: translateX(-50%) translateY(10px) scale(0.8);
-      background: white;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      transform: translateX(-50%) translateY(10px) scale(0.9);
+      background: #ffb6c1;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(255, 182, 193, 0.6);
       opacity: 0;
       transition: opacity 0.3s ease, transform 0.3s ease;
       pointer-events: none;
-      width: 180px;
+      width: 230px;
       text-align: center;
       z-index: 30;
-      user-select: text;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 15px;
+      color: #b30059;
+      font-weight: 600;
     }
 
-    .tooltip img {
-      width: 100px;
-      height: 100px;
+    .tooltip img.avatar {
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       object-fit: cover;
       margin-bottom: 10px;
-      user-select: none;
+      border: 3px solid #ff66a3;
+    }
+
+    .tooltip img.discord-icon {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 5px;
+      filter: invert(37%) sepia(56%) saturate(6276%) hue-rotate(318deg) brightness(99%) contrast(101%);
     }
 
     .tooltip a {
-      color: #e60073;
+      display: inline-block;
+      margin-top: 5px;
+      color: #d43873;
       text-decoration: none;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .tooltip div.username {
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-weight: 700;
     }
 
     .text-part:hover .tooltip {
@@ -136,40 +164,41 @@
 </head>
 <body>
 
-  <!-- Kalpler animasyonu -->
   <div class="hearts" id="hearts-container"></div>
 
-  <!-- Ses kontrol -->
   <div class="audio-controls">
     <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
     <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
   </div>
 
-  <!-- Metin ve tooltipler -->
   <div class="text-overlay">
     <div class="text-part" id="zahid">
       ZAHİD
       <div class="tooltip">
-        <img src="https://cdn.discordapp.com/avatars/461158648526143490/350034907e821d8bcfcb542224f2fb29.png" alt="Zahid" />
-        <div>shyla31</div>
-        <a href="https://discord.com/users/461158648526143490" target="_blank" rel="noopener noreferrer">Profili Gör</a>
+        <img src="https://cdn.discordapp.com/avatars/461158648526143490/350034907e821d8bcfcb542224f2fb29.png" class="avatar" />
+        <div class="username">
+          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="discord-icon" />
+          shyla31
+        </div>
+        <a href="https://discord.com/users/461158648526143490" target="_blank">Profili Gör</a>
       </div>
     </div>
     <div class="text-part" id="regen">
       ❤ REGEN
       <div class="tooltip">
-        <img src="https://cdn.discordapp.com/avatars/1208490819045163089/9b0d9fe14fe3ad3b6c32b65d9bc8d2ce.png" alt="Regen" />
-        <div>regenxs</div>
-        <a href="https://discord.com/users/1208490819045163089" target="_blank" rel="noopener noreferrer">Profili Gör</a>
+        <img src="https://cdn.discordapp.com/avatars/1208490819045163089/9b0d9fe14fe3ad3b6c32b65d9bc8d2ce.png" class="avatar" />
+        <div class="username">
+          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="discord-icon" />
+          regenxs
+        </div>
+        <a href="https://discord.com/users/1208490819045163089" target="_blank">Profili Gör</a>
       </div>
     </div>
   </div>
 
-  <!-- Arka plan müziği -->
   <audio id="background-music" src="music.mp3" loop></audio>
 
   <script>
-    // Yeni genişletilmiş emoji listesi
     const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
     const container = document.getElementById('hearts-container');
 
@@ -181,15 +210,11 @@
       heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
       heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
       container.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 10000);
+      setTimeout(() => heart.remove(), 10000);
     }
 
     setInterval(createHeart, 300);
 
-    // Audio controls
     const audio = document.getElementById('background-music');
     const playPauseBtn = document.getElementById('play-pause-btn');
     const muteBtn = document.getElementById('mute-btn');
