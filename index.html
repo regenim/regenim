@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-WBRMS3P4');</script>
-  <!-- End Google Tag Manager -->
-  <link rel="icon" href="favicon.png" type="image/png" />
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>ZAHİD ❤ REGEN</title>
+  <link rel="icon" href="favicon.png" type="image/png">
   <style>
     body {
       margin: 0;
@@ -24,115 +17,6 @@
       height: 100vh;
     }
 
-    /* Bakım Modu kaplaması */
-    #maintenance-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: #ffd6e8cc;
-      color: #b30059;
-      font-size: 3rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      text-align: center;
-      padding: 20px;
-      user-select: none;
-      backdrop-filter: blur(6px);
-    }
-
-    /* Bakım modu butonu */
-    #maintenance-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #e60073;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-size: 1rem;
-      opacity: 0.7;
-      transition: opacity 0.3s;
-      z-index: 10000;
-      user-select: none;
-    }
-    #maintenance-btn:hover {
-      opacity: 1;
-    }
-
-    /* Modal arka plan */
-    #password-modal {
-      display: none; /* gizli başlar */
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(230, 0, 115, 0.8);
-      backdrop-filter: blur(5px);
-      z-index: 10001;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* Modal kutu */
-    #password-modal .modal-content {
-      background: white;
-      padding: 25px 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px #e60073;
-      width: 320px;
-      max-width: 90%;
-      text-align: center;
-      font-family: 'Arial', sans-serif;
-    }
-
-    #password-modal h2 {
-      margin-top: 0;
-      color: #e60073;
-      margin-bottom: 15px;
-      font-weight: bold;
-    }
-
-    #password-input {
-      width: 100%;
-      padding: 10px 12px;
-      font-size: 1.2rem;
-      border: 2px solid #e60073;
-      border-radius: 10px;
-      outline: none;
-      transition: border-color 0.3s;
-      box-sizing: border-box;
-    }
-    #password-input:focus {
-      border-color: #ff1493;
-    }
-
-    #password-submit {
-      margin-top: 15px;
-      background: #e60073;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      font-size: 1.2rem;
-      border-radius: 10px;
-      cursor: pointer;
-      width: 100%;
-      transition: background-color 0.3s;
-    }
-    #password-submit:hover {
-      background: #ff1493;
-    }
-
-    #password-error {
-      color: #cc0044;
-      margin-top: 10px;
-      min-height: 20px;
-      font-weight: bold;
-    }
-
-    /* Kalp animasyonları */
     .hearts {
       position: absolute;
       width: 100%;
@@ -160,7 +44,6 @@
       }
     }
 
-    /* Ses kontrol butonları */
     .audio-controls {
       position: fixed;
       top: 10px;
@@ -185,7 +68,6 @@
       color: #ff1493;
     }
 
-    /* Metin */
     .text-overlay {
       position: absolute;
       top: 50%;
@@ -205,11 +87,6 @@
       position: relative;
       user-select: none;
     }
-
-    /* Tooltiplar */
-    .text-part[data-tooltip] {
-      position: relative;
-    }
     .text-part[data-tooltip]:hover::after {
       content: attr(data-tooltip);
       position: absolute;
@@ -219,21 +96,18 @@
       background: #e60073cc;
       color: white;
       padding: 0.2rem 0.6rem;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       border-radius: 6px;
       white-space: nowrap;
       pointer-events: none;
       user-select: none;
       z-index: 10;
     }
-
-    /* Discord profil resimleri hover animasyonu */
     .text-part:hover {
       filter: drop-shadow(0 0 5px #ff1493);
       transition: filter 0.3s ease;
     }
 
-    /* Discord logo */
     .discord-logo {
       width: 24px;
       height: 24px;
@@ -242,20 +116,16 @@
       filter: drop-shadow(0 0 3px #ff1493);
       user-select: none;
     }
-
   </style>
 </head>
 <body>
-
   <div class="hearts" id="hearts-container"></div>
 
-  <!-- Audio controls -->
   <div class="audio-controls">
     <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
     <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
   </div>
 
-  <!-- Metin -->
   <div class="text-overlay">
     <div class="text-part" id="zahid-text" data-tooltip="Zahid'in Discord Profili">
       ZAHİD
@@ -267,27 +137,46 @@
     </div>
   </div>
 
-  <!-- Audio element -->
   <audio id="background-music" src="music.mp3" loop></audio>
 
-  <!-- Bakım Modu Ekranı -->
-  <div id="maintenance-overlay">
-    Site şu anda <br><strong>bakımda</strong>. <br>Lütfen daha sonra tekrar deneyiniz.
-  </div>
-
-  <!-- Bakım Modu Butonu -->
-  <button id="maintenance-btn" title="Bakım Modunu Aç/Kapat">Bakım Modu</button>
-
-  <!-- Şifre Modal -->
-  <div id="password-modal">
-    <div class="modal-content">
-      <h2>Bakım Modu Şifresi</h2>
-      <input type="password" id="password-input" placeholder="Şifreyi giriniz..." />
-      <button id="password-submit">Onayla</button>
-      <div id="password-error"></div>
-    </div>
-  </div>
-
   <script>
-    // Kalp animasyonu
-    const hearts = ['❤','💕','💞
+    const music = document.getElementById('background-music');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const muteBtn = document.getElementById('mute-btn');
+
+    playPauseBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        playPauseBtn.textContent = '⏸️';
+      } else {
+        music.pause();
+        playPauseBtn.textContent = '▶️';
+      }
+    });
+
+    muteBtn.addEventListener('click', () => {
+      music.muted = !music.muted;
+      muteBtn.textContent = music.muted ? '🔇' : '🔊';
+    });
+
+    // Kalplerin rastgele animasyonu
+    const container = document.getElementById('hearts-container');
+    const emojis = ['❤','💕','💞','💖','💘','💝','💓','💗'];
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+      container.appendChild(heart);
+
+      setTimeout(() => {
+        container.removeChild(heart);
+      }, 10000);
+    }
+
+    setInterval(createHeart, 500);
+  </script>
+</body>
+</html>
