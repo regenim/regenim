@@ -1,164 +1,87 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WBRMS3P4');</script>
-<!-- End Google Tag Manager -->
-  <link rel="icon" href="favicon.png" type="image/png" />
-  <meta charset="UTF-8" />
-  <title>ZAHİD ❤ REGEN</title>
-  <style>
-    body {
-      <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WBRMS3P4"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-    
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: #ffd6e8; /* Daha belirgin pembe arka plan */
-      font-family: 'Arial', sans-serif;
-    }
-
-    .hearts {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .heart {
-      position: absolute;
-      font-size: 2rem;
-      color: pink;
-      animation: floatHearts 10s linear infinite;
-    }
-
-    @keyframes floatHearts {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-10vh) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
-    /* Oynatma ve ses butonları için stil */
-    .audio-controls {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      gap: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 5px 10px;
-      border-radius: 8px;
-      z-index: 10;
-      align-items: center;
-    }
-
-    .btn {
-      cursor: pointer;
-      color: white;
-      font-size: 1.2rem;
-      user-select: none;
-      transition: color 0.3s;
-    }
-
-    .btn:hover {
-      color: #ff69b4;
-    }
-
-    /* Metin */
-    .text-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3rem;
-      font-weight: bold;
-      color: #e60073;
-      z-index: 1;
-      text-shadow: 2px 2px 4px #ffb6c1;
-      display: flex;
-      gap: 10px;
-    }
-
-    .text-part {
-      cursor: default;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>ZAHİD ❤ REGEN - Animasyonlu Tooltip</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffd6e8;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    user-select: none;
+  }
+  .text-overlay {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #e60073;
+    text-shadow: 2px 2px 4px #ffb6c1;
+    display: flex;
+    gap: 10px;
+  }
+  .text-part {
+    position: relative;
+    cursor: pointer;
+  }
+  .tooltip {
+    position: absolute;
+    top: 3.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px) scale(0.8);
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    width: 180px;
+    text-align: center;
+    z-index: 10;
+  }
+  .tooltip img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  .tooltip a {
+    color: #e60073;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .text-part:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+    pointer-events: auto;
+  }
+</style>
 </head>
 <body>
 
-<div class="hearts" id="hearts-container"></div>
-
-<!-- Audio controls -->
-<div class="audio-controls">
-  <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
-  <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
-</div>
-
-<!-- Metin -->
 <div class="text-overlay">
-  <div class="text-part" id="zahid-text">ZAHİD</div>
-  <div class="text-part" id="regen-text">❤ REGEN</div>
+  <div class="text-part" id="zahid">
+    ZAHİD
+    <div class="tooltip">
+      <img src="https://cdn.discordapp.com/avatars/461158648526143490/350034907e821d8bcfcb542224f2fb29.png" alt="Zahid" />
+      <div>Zahid#1234</div>
+      <a href="https://discord.com/users/461158648526143490" target="_blank" rel="noopener noreferrer">Profili Gör</a>
+    </div>
+  </div>
+  <div class="text-part" id="regen">
+    ❤ REGEN
+    <div class="tooltip">
+      <img src="https://cdn.discordapp.com/avatars/1208490819045163089/9b0d9fe14fe3ad3b6c32b65d9bc8d2ce.png" alt="Regen" />
+      <div>Regen#5678</div>
+      <a href="https://discord.com/users/1208490819045163089" target="_blank" rel="noopener noreferrer">Profili Gör</a>
+    </div>
+  </div>
 </div>
-
-<!-- Audio element -->
-<audio id="background-music" src="music.mp3" loop></audio>
-
-<script>
-  const hearts = ['❤','💕','💞','💓','💗','💖','💝'];
-  const container = document.getElementById('hearts-container');
-
-  function createHeart() {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-    container.appendChild(heart);
-
-    setTimeout(() => {
-      heart.remove();
-    }, 10000);
-  }
-
-  setInterval(createHeart, 300);
-
-  // Audio controls
-  const audio = document.getElementById('background-music');
-  const playPauseBtn = document.getElementById('play-pause-btn');
-  const muteBtn = document.getElementById('mute-btn');
-
-  playPauseBtn.addEventListener('click', () => {
-    if (audio.paused) {
-      audio.play();
-      playPauseBtn.textContent = '⏸️';
-    } else {
-      audio.pause();
-      playPauseBtn.textContent = '▶️';
-    }
-  });
-
-  muteBtn.addEventListener('click', () => {
-    audio.muted = !audio.muted;
-    muteBtn.textContent = audio.muted ? '🔇' : '🔊';
-  });
-</script>
 
 </body>
 </html>
