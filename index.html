@@ -37,17 +37,9 @@
     }
 
     @keyframes floatHearts {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-10vh) rotate(360deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
     }
 
     .audio-controls {
@@ -233,7 +225,14 @@
       audio.muted = !audio.muted;
       muteBtn.textContent = audio.muted ? '🔇' : '🔊';
     });
-  </script>
 
-</body>
-</html>
+    // REGEX HİLESİ: 'regen' yaz sonra Enter'a bas, şarkı açılır
+    const secretCode = ['r','e','g','e','n'];
+    let inputSequence = [];
+
+    window.addEventListener('keydown', (e) => {
+      inputSequence.push(e.key.toLowerCase());
+      if (inputSequence.length > secretCode.length) inputSequence.shift();
+
+      if (inputSequence.join('') === secretCode.join('')) {
+        window.addEventListener('keydown', function enterHandler
