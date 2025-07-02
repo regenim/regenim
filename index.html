@@ -68,7 +68,7 @@
       color: #ff69b4;
     }
 
-    /* Metin ve hover için */
+    /* Metin */
     .text-overlay {
       position: absolute;
       top: 50%;
@@ -84,22 +84,7 @@
     }
 
     .text-part {
-      position: relative;
-      cursor: pointer;
-    }
-
-    /* Görseller için stil */
-    .hover-image {
-      position: absolute;
-      top: -220px; /* Metnin biraz üstüne çıkacak şekilde ayar */
-      left: 50%;
-      transform: translateX(-50%);
-      max-width: 200px;
-      max-height: 200px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 5;
+      cursor: default;
     }
   </style>
 </head>
@@ -113,14 +98,10 @@
   <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
 </div>
 
-<!-- Metin ve hover görseller -->
+<!-- Metin -->
 <div class="text-overlay">
-  <div class="text-part" id="zahid-text">ZAHİD
-    <img src="b.png" alt="b image" class="hover-image" id="b-image" />
-  </div>
-  <div class="text-part" id="regen-text">❤ REGEN
-    <img src="a.jpg" alt="a image" class="hover-image" id="a-image" />
-  </div>
+  <div class="text-part" id="zahid-text">ZAHİD</div>
+  <div class="text-part" id="regen-text">❤ REGEN</div>
 </div>
 
 <!-- Audio element -->
@@ -164,26 +145,6 @@
   muteBtn.addEventListener('click', () => {
     audio.muted = !audio.muted;
     muteBtn.textContent = audio.muted ? '🔇' : '🔊';
-  });
-
-  // Hover images
-  const zahidText = document.getElementById('zahid-text');
-  const regenText = document.getElementById('regen-text');
-  const bImage = document.getElementById('b-image');
-  const aImage = document.getElementById('a-image');
-
-  zahidText.addEventListener('mouseenter', () => {
-    bImage.style.display = 'block';
-  });
-  zahidText.addEventListener('mouseleave', () => {
-    bImage.style.display = 'none';
-  });
-
-  regenText.addEventListener('mouseenter', () => {
-    aImage.style.display = 'block';
-  });
-  regenText.addEventListener('mouseleave', () => {
-    aImage.style.display = 'none';
   });
 </script>
 
