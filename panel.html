@@ -8,23 +8,60 @@
       font-family: Arial, sans-serif; 
       background: #121212; 
       color: #fff; 
+      margin: 0; 
+      min-height: 100vh;
       display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh; 
-      margin: 0;
       flex-direction: column;
-      text-align: center;
+      align-items: center;
+      padding: 20px;
     }
-    button {
+    header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    header img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid #7289da;
+    }
+    header .username {
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+    nav {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    nav button {
       padding: 10px 20px;
       background: #7289da;
       border: none;
+      border-radius: 6px;
       color: white;
-      font-size: 1.2rem;
-      border-radius: 8px;
       cursor: pointer;
-      margin-top: 15px;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    nav button:hover, nav button.active {
+      background-color: #5b6eae;
+    }
+    #content {
+      background: #1f1f1f;
+      border-radius: 10px;
+      padding: 20px;
+      width: 100%;
+      max-width: 600px;
+      min-height: 200px;
+      box-sizing: border-box;
+    }
+    #logoutBtn {
+      margin-top: 20px;
+      background: #f04747;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -32,16 +69,14 @@
   <div id="content">Giriş yapılıyor...</div>
 
 <script>
-  const clientId = "1390293095551336610";  // Discord uygulama client ID'n
-  const redirectUri = "https://zahid.life/panel.html";  // Panel URL'n
-  const authorizedUserId = "461158648526143490"; // Senin Discord kullanıcı ID'n
+  const clientId = "1390293095551336610";  
+  const redirectUri = "https://zahid.life/panel.html";  
+  const authorizedUserId = "461158648526143490"; 
 
   const content = document.getElementById("content");
 
-  // Discord OAuth2 URL'si (token tipi ile)
   const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
 
-  // URL hash'ten access_token'ı alır
   function getAccessToken() {
     const hash = window.location.hash;
     if (!hash) return null;
@@ -49,7 +84,6 @@
     return params.get("access_token");
   }
 
-  // Discord API'den kullanıcı bilgisi alır
   async function fetchDiscordUser(token) {
     const res = await fetch("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${token}` }
@@ -58,11 +92,52 @@
     return res.json();
   }
 
+  // Menü ve içerik kontrolü
+  function setActiveButton(button) {
+    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+  }
+
+  function renderMenu() {
+    return `
+      <nav>
+        <button id="istatistikBtn" class="active">İstatistikler</button>
+        <button id="ayarlarBtn">Ayarlar</button>
+      </nav>
+    `;
+  }
+
+  function renderUserHeader(user) {
+    const avatarUrl = user.avatar 
+      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` 
+      : 'https://cdn.discordapp.com/embed/avatars/0.png'; // Default avatar
+
+    return `
+      <header>
+        <img src="${avatarUrl}" alt="Avatar" />
+        <div class="username">${user.username}#${user.discriminator}</div>
+      </header>
+    `;
+  }
+
+  function renderIstatistikler() {
+    return `
+      <h2>İstatistikler</h2>
+      <p>Bu bölümde ileride bot istatistikleri, kullanıcı verileri veya benzeri bilgiler gösterilebilir.</p>
+    `;
+  }
+
+  function renderAyarlar() {
+    return `
+      <h2>Ayarlar</h2>
+      <p>Buraya panel ayarlarını ekleyebilirsin.</p>
+    `;
+  }
+
   async function main() {
     const token = getAccessToken();
 
     if (!token) {
-      // Token yok, giriş butonunu göster
       content.innerHTML = `<button id="loginBtn">Discord ile Giriş Yap</button>`;
       document.getElementById("loginBtn").onclick = () => {
         window.location.href = discordAuthUrl;
@@ -73,23 +148,43 @@
     try {
       const user = await fetchDiscordUser(token);
 
-      if (user.id === authorizedUserId) {
-        content.innerHTML = `
-          <h1>Hoşgeldin, ${user.username}!</h1>
-          <p>Panel erişimi sağlandı.</p>
-          <button id="logoutBtn">Çıkış Yap</button>
-        `;
-        document.getElementById('logoutBtn').onclick = () => {
-          // Çıkış için token'ı temizlemek adına hash'i kaldır ve sayfayı yenile
-          window.location.href = redirectUri;
-        };
-        // Buraya panel içeriğini ekleyebilirsin
-      } else {
+      if (user.id !== authorizedUserId) {
         content.innerHTML = `
           <h1>⚠️ Erişim Reddedildi</h1>
           <p>Bu kullanıcı paneli görüntüleyemez.</p>
         `;
+        return;
       }
+
+      // Panel arayüzü
+      content.innerHTML = `
+        ${renderUserHeader(user)}
+        ${renderMenu()}
+        <section id="panelContent">${renderIstatistikler()}</section>
+        <button id="logoutBtn">Çıkış Yap</button>
+      `;
+
+      // Menü butonları etkinliği
+      const istatistikBtn = document.getElementById('istatistikBtn');
+      const ayarlarBtn = document.getElementById('ayarlarBtn');
+      const panelContent = document.getElementById('panelContent');
+
+      istatistikBtn.onclick = () => {
+        setActiveButton(istatistikBtn);
+        panelContent.innerHTML = renderIstatistikler();
+      };
+
+      ayarlarBtn.onclick = () => {
+        setActiveButton(ayarlarBtn);
+        panelContent.innerHTML = renderAyarlar();
+      };
+
+      // Çıkış butonu
+      document.getElementById('logoutBtn').onclick = () => {
+        // Token'ı temizlemek için hash'i kaldır
+        window.location.href = redirectUri;
+      };
+
     } catch(e) {
       content.innerHTML = `<p>Girişte hata: ${e.message}</p>`;
     }
