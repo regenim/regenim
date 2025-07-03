@@ -9,53 +9,29 @@
         href="https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg"
         type="image/png"/>
 
-  <!-- === Config kontrolü: active === "black" ise yönlendir === -->
+  <!-- === Config kontrolü === -->
   <script>
   (async () => {
-    try {
-      const res = await fetch('config.json?' + Date.now());
-      const cfg = await res.json();
-      if (cfg.active === 'black') location.replace('black.html');
-    } catch (e) {
-      console.warn('config.json okunamadı:', e);
-    }
+    try{
+      const cfg = await fetch('config.json?'+Date.now()).then(r=>r.json());
+      if(cfg.active === 'black') location.replace('black.html');
+    }catch(e){console.warn('config.json okunamadı', e);}
   })();
   </script>
 
-  <!-- ........................  TÜM CSS  ........................ -->
+  <!-- === CSS === -->
   <style>
-    body{
-      margin:0;padding:0;overflow:hidden;
-      background:url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg') no-repeat center/cover fixed;
-      font-family:Arial, sans-serif;
-      user-select:none;height:100vh;position:relative;color:#e60073;
-    }
-    /* ... kalp animasyonu, tooltip ve diğer stiller ... */
-    .hearts{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    /* … (TÜM mevcut stillerin olduğu blok) … */
+    body{margin:0;padding:0;overflow:hidden;background:url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg') no-repeat center/cover fixed;font-family:Arial,sans-serif;user-select:none;height:100vh;position:relative;color:#e60073}
+    .hearts{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
     .heart{position:absolute;font-size:2rem;color:pink;animation:floatHearts linear infinite;filter:drop-shadow(0 0 2px #ff69b4)}
-    @keyframes floatHearts{
-      0%{transform:translateY(100vh) rotate(0deg);opacity:0}
-      20%{opacity:1}
-      100%{transform:translateY(-10vh) rotate(360deg);opacity:0}
-    }
-    .audio-controls{
-      position:fixed;top:10px;left:10px;display:flex;gap:15px;
-      background:rgba(255,182,193,.6);padding:8px 14px;border-radius:12px;
-      z-index:20;align-items:center;box-shadow:0 0 10px #ffb6c1aa
-    }
+    @keyframes floatHearts{0%{transform:translateY(100vh) rotate(0deg);opacity:0}20%{opacity:1}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+    .audio-controls{position:fixed;top:10px;left:10px;display:flex;gap:15px;background:rgba(255,182,193,.6);padding:8px 14px;border-radius:12px;z-index:20;align-items:center;box-shadow:0 0 10px #ffb6c1aa}
     .btn{cursor:pointer;color:#ff69b4;font-size:2.5rem;transition:.3s;filter:drop-shadow(0 0 2px #ff69b4)}
     .btn:hover{color:#ff1493;transform:scale(1.1);filter:drop-shadow(0 0 5px #ff1493)}
-    .text-overlay{
-      position:relative;z-index:10;height:100vh;display:flex;justify-content:center;align-items:center;
-      gap:40px;font-size:6rem;font-weight:bold;text-shadow:2px 2px 4px #ffb6c1
-    }
+    .text-overlay{position:relative;z-index:10;height:100vh;display:flex;justify-content:center;align-items:center;gap:40px;font-size:6rem;font-weight:bold;text-shadow:2px 2px 4px #ffb6c1}
     .text-part{position:relative;cursor:pointer;color:#e60073}
-    .tooltip{
-      position:absolute;top:5.5rem;left:50%;transform:translate(-50%,15px) scale(1.2);
-      background:#ffb6c1;border-radius:12px;padding:12px 18px;box-shadow:0 4px 12px rgba(255,182,193,.6);
-      opacity:0;transition:.3s;pointer-events:none;width:320px;text-align:center;
-      font-family:"Segoe UI",sans-serif;font-size:18px;font-weight:600;color:#b30059;z-index:30
-    }
+    .tooltip{position:absolute;top:5.5rem;left:50%;transform:translate(-50%,15px) scale(1.2);background:#ffb6c1;border-radius:12px;padding:12px 18px;box-shadow:0 4px 12px rgba(255,182,193,.6);opacity:0;transition:.3s;pointer-events:none;width:320px;text-align:center;font-family:"Segoe UI",sans-serif;font-size:18px;font-weight:600;color:#b30059;z-index:30}
     .text-part:hover .tooltip{opacity:1;transform:translate(-50%,0) scale(1.3);pointer-events:auto}
     .tooltip img.avatar{width:110px;height:110px;border-radius:50%;object-fit:cover;margin-bottom:15px;border:3px solid #ff66a3}
     .tooltip img.discord-icon{width:28px;height:28px;vertical-align:middle;margin-right:10px;filter:invert(37%) sepia(56%) saturate(6276%) hue-rotate(318deg) brightness(99%) contrast(101%)}
@@ -64,13 +40,14 @@
   </style>
 </head>
 <body>
+
   <!-- Kalpler -->
   <div class="hearts" id="hearts-container"></div>
 
-  <!-- Ses butonları -->
+  <!-- Ses kontrolleri -->
   <div class="audio-controls">
     <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
-    <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
+    <div id="mute-btn"       class="btn" title="Ses Aç/Kapat">🔊</div>
   </div>
 
   <!-- İsimler + Tooltip -->
@@ -78,12 +55,10 @@
     <div class="text-part" id="zahid">
       ZAHİD
       <div class="tooltip">
-        <img class="avatar"
-             src="https://cdn.discordapp.com/avatars/461158648526143490/placeholder.png"/>
+        <img class="avatar" src="" alt="avatar zahid"/>
         <div class="username">
-          <img class="discord-icon"
-               src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/>
-          zahid
+          <img class="discord-icon" src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/>
+          ...
         </div>
         <a href="https://discord.com/users/461158648526143490" target="_blank" rel="noopener noreferrer">Profili Gör</a>
       </div>
@@ -92,12 +67,10 @@
     <div class="text-part" id="regen">
       ❤ REGEN
       <div class="tooltip">
-        <img class="avatar"
-             src="https://cdn.discordapp.com/avatars/1208490819045163089/placeholder.png"/>
+        <img class="avatar" src="" alt="avatar regen"/>
         <div class="username">
-          <img class="discord-icon"
-               src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/>
-          regen
+          <img class="discord-icon" src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/>
+          ...
         </div>
         <a href="https://discord.com/users/1208490819045163089" target="_blank" rel="noopener noreferrer">Profili Gör</a>
       </div>
@@ -106,134 +79,63 @@
 
   <audio id="background-music" src="music.mp3" loop></audio>
 
-  <!-- ........................  TÜM JS  ........................ -->
+  <!-- === JAVASCRIPT === -->
   <script>
-  /* === Kalp animasyonu === */
-  const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
-  const container = document.getElementById('hearts-container');
-  function createHeart(){
-    const h=document.createElement('div');
-    h.className='heart';
-    h.style.left=Math.random()*100+'vw';
-    h.style.fontSize=(Math.random()*2+1)+'rem';
-    h.style.animationDuration=(Math.random()*5+5)+'s';
-    h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
-    container.appendChild(h);
-    setTimeout(()=>h.remove(),10000);
-  }
-  setInterval(createHeart,300);
+  /* ---------------- Kalp animasyonu ---------------- */
+  const hearts=['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
+  const heartsBox=document.getElementById('hearts-container');
+  setInterval(()=>{const d=document.createElement('div');d.className='heart';d.textContent=hearts[Math.random()*hearts.length|0];d.style.left=Math.random()*100+'vw';d.style.fontSize=(Math.random()*2+1)+'rem';d.style.animationDuration=(Math.random()*5+5)+'s';heartsBox.appendChild(d);setTimeout(()=>d.remove(),10e3)},300);
 
-  /* === Ses kontrolü === */
+  /* ---------------- Ses kontrolleri ---------------- */
   const audio=document.getElementById('background-music');
-  document.getElementById('play-pause-btn').onclick=()=>{
-    if(audio.paused){audio.play();event.target.textContent='⏸️';}
-    else{audio.pause();event.target.textContent='▶️';}
+  document.getElementById('play-pause-btn').onclick=e=>{
+    if(audio.paused){audio.play();e.target.textContent='⏸️';}else{audio.pause();e.target.textContent='▶️';}
   };
-  document.getElementById('mute-btn').onclick=()=>{
+  document.getElementById('mute-btn').onclick=e=>{
     audio.muted=!audio.muted;
-    event.target.textContent=audio.muted?'🔇':'🔊';
+    e.target.textContent=audio.muted?'🔇':'🔊';
   };
 
-  /* === Discord profilini güncel tut === */
-  async function updateTooltip(id, el){
+  /* ---------- Discord avatar + isim güncelleme ---------- */
+  async function updateTooltip(userId, elementSelector){
     try{
-      const r=await fetch(`https://api.lanyard.rest/v1/users/${id}`);
-      const j=await r.json();
-      if(!j.success) return;
+      const {success,data}=await fetch(`https://api.lanyard.rest/v1/users/${userId}`).then(r=>r.json());
+      if(!success) return;
+      const u=data.discord_user;
+      const avatarURL = u.avatar
+        ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_')?'gif':'png'}?size=256`
+        : `https://cdn.discordapp.com/embed/avatars/${(+u.discriminator)%5}.png`;
 
-      const u=j.data.discord_user;
-      const hash=u.avatar;
-      const name=u.username;
-      const disc=u.discriminator==="0"?"":"#"+u.discriminator;
-      const avatar=hash
-        ?`https://cdn.discordapp.com/avatars/${u.id}/${hash}.png?size=256&t=${Date.now()}`
-        :`https://cdn.discordapp.com/embed/avatars/${parseInt(u.discriminator)%5}.png`;
-
-      el.querySelector('img.avatar').src=avatar;
-      el.querySelector('.username').innerHTML=
-        `<img class="discord-icon"
-              src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/> ${name}${disc}`;
-    }catch{}
-  }
-  const zTip=document.querySelector('#zahid .tooltip');
-  const rTip=document.querySelector('#regen .tooltip');
-  function refreshProfiles(){
-    updateTooltip('461158648526143490', zTip);
-    updateTooltip('1208490819045163089', rTip);
-  }
-  refreshProfiles();
-  setInterval(refreshProfiles, 5*60*1000); // 5 dk
-
-  /* === Ziyaretçi bilgisi Discord webhook === */
-  const webhookURL="https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2WcKAsGrkoo339-R4i14UPl1o3LK0iuKdZf";
-  function getBrowser(){
-    const ua=navigator.userAgent;
-    if(ua.includes("Firefox")) return "Firefox";
-    if(ua.includes("SamsungBrowser")) return "Samsung Internet";
-    if(ua.includes("Opera")||ua.includes("OPR")) return "Opera";
-    if(ua.includes("Trident")) return "IE";
-    if(ua.includes("Edge")) return "Edge";
-    if(ua.includes("Chrome")) return "Chrome";
-    if(ua.includes("Safari")) return "Safari";
-    return "Bilinmeyen";
-  }
-  (async()=>{
-    try{
-      const ip=await fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(j=>j.ip);
-      const now=new Date();
-      const payload={
-        embeds:[{
-          title:"Yeni Site Ziyaretçisi",
-          color:0xff69b4,
-          fields:[
-            {name:"IP",value:ip,inline:true},
-            {name:"Tarayıcı",value:getBrowser(),inline:true},
-            {name:"Tarih & Saat",value:now.toLocaleString('tr-TR',{timeZone:'Europe/Istanbul'}),inline:false}
-          ],
-          footer:{text:"ZAHİD ❤ REGEN"},
-          timestamp:now.toISOString()
-        }]
-      };
-      fetch(webhookURL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    }catch(e){console.warn('Webhook başarısız',e);}
-  })();
-  </script>
-  <script>
-  async function updateTooltip(userId, elementId) {
-    try {
-      const res = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
-      const json = await res.json();
-      if (!json.success || !json.data || !json.data.discord_user) return;
-
-      const user = json.data.discord_user;
-      const hash = user.avatar;
-      const tag = `${user.username}#${user.discriminator}`;
-      const avatar = hash
-        ? `https://cdn.discordapp.com/avatars/${user.id}/${hash}.png?size=256`
-        : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`;
-
-      const el = document.querySelector(`#${elementId} .tooltip`);
-      if (!el) return;
-
-      // Avatarı ve ismi güncelle
-      const avatarImg = el.querySelector('img.avatar');
-      avatarImg.src = ""; // önce sıfırla
-      avatarImg.src = avatar;
-
-      const usernameDiv = el.querySelector('.username');
-      const icon = usernameDiv.querySelector('img.discord-icon');
-      usernameDiv.innerHTML = "";
-      usernameDiv.appendChild(icon);
-      usernameDiv.append(` ${user.username}`);
-
-    } catch (e) {
-      console.error("Tooltip güncellenemedi:", e);
+      const tooltip    = document.querySelector(elementSelector);
+      tooltip.querySelector('img.avatar').src = avatarURL;
+      tooltip.querySelector('.username').innerHTML =
+        `<img class="discord-icon" src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/> ${u.username}`;
+    }catch(e){
+      console.warn('Avatar güncellenemedi', e);
     }
   }
+  function refreshProfiles(){
+    updateTooltip('461158648526143490','#zahid .tooltip');
+    updateTooltip('1208490819045163089','#regen .tooltip');
+  }
+  refreshProfiles();               // ilk yüklemede
+  setInterval(refreshProfiles,5*60*1000); // 5 dk
 
-  updateTooltip("461158648526143490", "zahid");
-  updateTooltip("1208490819045163089", "regen");
-</script>
-
+  /* ------------- Ziyaretçi bilgisi webhook ------------- */
+  (async()=>{
+    const webhook="https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2WcKAsGrkoo339-R4i14UPl1o3LK0iuKdZf";
+    try{
+      const ip = await fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(j=>j.ip);
+      const ua = navigator.userAgent;
+      const browser = /Firefox/.test(ua)?'Firefox':/SamsungBrowser/.test(ua)?'Samsung Internet':/OPR|Opera/.test(ua)?'Opera':/Edg/.test(ua)?'Edge':/Chrome/.test(ua)?'Chrome':/Safari/.test(ua)?'Safari':'Diğeri';
+      const now = new Date();
+      await fetch(webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        embeds:[{title:'Yeni Ziyaretçi',color:0xff69b4,
+          fields:[{name:'IP',value:ip,inline:true},{name:'Tarayıcı',value:browser,inline:true},
+                  {name:'Zaman',value:now.toLocaleString('tr-TR',{timeZone:'Europe/Istanbul'})}],
+          footer:{text:'ZAHİD ❤ REGEN'},timestamp:now.toISOString()}]}});
+    }catch(e){console.warn('Webhook err',e);}
+  })();
+  </script>
 </body>
 </html>
