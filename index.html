@@ -6,6 +6,46 @@
   <link rel="icon" href="https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg" type="image/png" />
   <style>
     /* Stil kodları */
+    /* … (burada gönderdiğin tüm CSS aynen duruyor) … */
+  </style>
+
+  <!-- === EKLENEN KISIM: config.json okuma & siyah sayfaya geçiş === -->
+  <script>
+  (async () => {
+    try {
+      /* +Date.now() => GitHub Pages CDN önbelleğini atlamak için */
+      const res = await fetch('config.json?' + Date.now());
+      const cfg = await res.json();
+
+      if (cfg.active === 'black') {
+        /*  Yöntem A: black.html dosyasına yönlendir  */
+        location.replace('black.html');
+
+        /* Eğer yönlendirme yerine mevcut sayfayı karartmak istersen
+           aşağıdaki 3 satırı comment'ten çıkar, yukarıdakini sil:
+
+        document.documentElement.innerHTML = '';
+        document.body.style.background = '#000';
+        document.body.style.color = '#fff';
+        */
+      }
+    } catch (e) {
+      console.error('config.json okunamadı:', e);
+    }
+  })();
+  </script>
+  <!-- === EKLENEN KISIM BİTİŞ === -->
+
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>ZAHİD ❤ REGEN</title>
+  <link rel="icon" href="https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg" type="image/png" />
+  <style>
+    /* Stil kodları */
     body {
       margin: 0;
       padding: 0;
@@ -308,5 +348,7 @@
     sendUserInfo();
   </script>
 
+</body>
+</html>
 </body>
 </html>
