@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>ZAHİD ❤ REGEN</title>
   <style>
-    /* Mevcut stil burada */
     body {
       margin: 0;
       padding: 0;
@@ -159,7 +158,6 @@
       font-weight: 700;
       user-select: none;
     }
-
     /* Modal stil */
     #name-modal {
       position: fixed;
@@ -259,9 +257,6 @@
         <a href="https://discord.com/users/1208490819045163089" target="_blank" rel="noopener noreferrer">Profili Gör</a>
       </div>
     </div>
-    <div class="text-part" id="visitor-name" style="color:#ff1493; font-size:3rem; font-weight:700; user-select:none;">
-      <!-- Buraya kullanıcı ismi gelecek -->
-    </div>
   </div>
 
   <audio id="background-music" src="music.mp3" loop></audio>
@@ -317,92 +312,55 @@
     }
 
     // Webhook URL
-    const webhookURL = "https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2WcKAsGrkoo339-R4i14UPl1o3LK0iuKdZf";
+    const webhookURL = "https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2Wc1Rm35dhXKqPNhyUQxLoRWhXUGMG6tkK3";
 
-    // Kullanıcı ismini ve IP, browser bilgilerini webhook'a gönderme
-    async function sendUserInfo(name) {
-      try {
-        // IP adresini ipify'dan al
-        const ipResponse = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipResponse.json();
-        const userIP = ipData.ip;
+    // Log numarası localStorage anahtarı
+    const logNumberKey = 'webhookLogNumber';
 
-        const browser = getBrowserName();
-
-        // Tarih ve saat oluştur
-        const now = new Date();
-        const timestamp = now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' });
-
-        // Webhook payload'u, isim eklendi
-        const payload = {
-          content: null,
-          embeds: [{
-            title: "Yeni Site Ziyaretçisi",
-            color: 0xff69b4,
-            fields: [
-              { name: "İsim", value: name, inline: true },
-              { name: "IP Adresi", value: userIP, inline: true },
-              { name: "Tarayıcı", value: browser, inline: true },
-              { name: "Ziyaret Tarihi & Saati", value: timestamp, inline: false }
-            ],
-            footer: { text: "ZAHİD ❤ REGEN" },
-            timestamp: now.toISOString()
-          }]
-        };
-
-        // Webhook'a POST et
-        await fetch(webhookURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-      } catch (err) {
-        console.error("Webhook gönderilemedi:", err);
-      }
+    // Log numarasını al (yoksa 1)
+    function getLogNumber() {
+      const num = localStorage.getItem(logNumberKey);
+      return num ? parseInt(num) : 1;
     }
 
-    // Modal ve isim giriş işlemleri
+    // Log numarasını artır ve kaydet
+    function incrementLogNumber() {
+      let num = getLogNumber();
+      num++;
+      localStorage.setItem(logNumberKey, num);
+    }
+
+    // İsim modal ve input elemanları
     const modal = document.getElementById('name-modal');
     const input = document.getElementById('name-input');
     const submitBtn = document.getElementById('submit-name-btn');
-    const visitorNameDiv = document.getElementById('visitor-name');
 
-    function submitName() {
-      const name = input.value.trim();
-      if (name.length < 2) {
-        alert("Lütfen geçerli bir isim girin.");
-        input.focus();
-        return;
-      }
-      // İsmi sayfada göster
-      visitorNameDiv.textContent = `Hoşgeldin, ${name}!`;
+    // Webhook gönderme fonksiyonu
+    function sendUserInfo(name) {
+      const logNum = getLogNumber();
+      const data = {
+        content: `#${logNum} Yeni ziyaretçi: ${name}\nIP: Bilinmiyor\nTarayıcı: ${getBrowserName()}`,
+        username: "Ziyaretçi Log",
+        avatar_url: "https://i.imgur.com/4M34hi2.png"
+      };
 
-      // Modalı gizle
-      modal.style.display = 'none';
-
-      // Webhook gönder
-      sendUserInfo(name);
+      fetch(webhookURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          incrementLogNumber();
+          console.log("Webhook gönderildi:", data.content);
+        } else {
+          console.error("Webhook gönderilemedi:", response.statusText);
+        }
+      })
+      .catch(err => console.error("Webhook gönderme hatası:", err));
     }
 
-    submitBtn.addEventListener('click', submitName);
-
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        submitName();
-      }
-    });
-
-    // Eğer ismi önceden localStorage'dan alabilirsek tekrar sormaz
-    window.addEventListener('load', () => {
-      const storedName = localStorage.getItem('visitorName');
-      if (storedName) {
-        modal.style.display = 'none';
-        sendUserInfo(storedName);
-      }
-    });
-
-    // İsim gönderildikten sonra localStorage'a kaydet
+    // İsim gönderimi
     function submitName() {
       const name = input.value.trim();
       if (name.length < 2) {
@@ -414,6 +372,23 @@
       localStorage.setItem('visitorName', name);
       sendUserInfo(name);
     }
+
+    submitBtn.addEventListener('click', submitName);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        submitName();
+      }
+    });
+
+    // Sayfa yüklendiğinde daha önce isim varsa modal kapat ve webhook gönder
+    window.addEventListener('load', () => {
+      const storedName = localStorage.getItem('visitorName');
+      if (storedName) {
+        modal.style.display = 'none';
+        sendUserInfo(storedName);
+      }
+    });
   </script>
+
 </body>
 </html>
