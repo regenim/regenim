@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>ZAHİD ❤ REGEN</title>
-  <link rel="icon" href="favicon.png" type="image/png" />
   <style>
+    /* ... önceki style'lar aynen buraya gelsin ... */
     body {
       margin: 0;
       padding: 0;
@@ -209,6 +209,7 @@
   <audio id="background-music" src="music.mp3" loop></audio>
 
   <script>
+    // Kalp animasyonu için
     const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
     const container = document.getElementById('hearts-container');
 
@@ -225,28 +226,9 @@
 
     setInterval(createHeart, 300);
 
+    // Audio kontrol
     const audio = document.getElementById('background-music');
     const playPauseBtn = document.getElementById('play-pause-btn');
     const muteBtn = document.getElementById('mute-btn');
 
-    playPauseBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play();
-        playPauseBtn.textContent = '⏸️';
-      } else {
-        audio.pause();
-        playPauseBtn.textContent = '▶️';
-      }
-    });
-
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      muteBtn.textContent = audio.muted ? '🔇' : '🔊';
-    });
-
-    // Tarayıcı adını temiz almak için fonksiyon
-    function getBrowserName() {
-      const ua = navigator.userAgent;
-      if (ua.indexOf("Firefox") > -1) return "Firefox";
-      if (ua.indexOf("SamsungBrowser") > -1) return "Samsung Internet";
-      if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR")
+    playPauseBtn
