@@ -13,7 +13,21 @@
     height: 100vh;
     color: #e60073;
   }
-  /* Kalp animasyonu, audio kontrolleri, modal ve diğer css kodları aynı kalabilir, kısaca yazdım */
+  /* Sayfa ortasında başlık */
+  #main-title {
+    position: fixed;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 3.8rem;
+    font-weight: 900;
+    color: #ff66b2;
+    text-shadow: 0 0 10px #ff1493, 0 0 20px #ff66b2;
+    user-select:none;
+    z-index: 25;
+    font-family: 'Arial Black', Arial, sans-serif;
+  }
+
   .hearts { position: fixed; width: 100vw; height: 100vh; overflow: hidden; pointer-events: none; top:0; left:0; z-index:0; }
   .heart { position: absolute; font-size: 2rem; color: pink; animation-name: floatHearts; animation-timing-function: linear; animation-iteration-count: infinite; user-select:none; filter: drop-shadow(0 0 2px #ff69b4); }
   @keyframes floatHearts {
@@ -30,9 +44,12 @@
   #name-input { width: 100%; padding: 12px 15px; font-size: 1.3rem; border: none; border-radius: 10px; box-shadow: inset 0 0 10px #ff69b4aa; outline:none; font-weight: 600; color: #900046; user-select:text; }
   #submit-name-btn { margin-top: 20px; background: #e60073; border:none; color: white; padding: 12px 20px; border-radius: 10px; font-size: 1.2rem; cursor:pointer; font-weight:700; transition: background 0.3s; }
   #submit-name-btn:hover { background: #b30059; }
+  #reset-btn { margin-top:10px; background:#900046; border:none; color:#fff; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:700; }
 </style>
 </head>
 <body>
+
+<div id="main-title">ZAHİD ❤ REGEN</div>
 
 <div class="hearts" id="hearts-container"></div>
 
@@ -44,16 +61,16 @@
 <div id="name-modal">
   <div id="name-modal-content">
     <h2>İsminizi Girin</h2>
-    <input id="name-input" type="text" placeholder="Adınız..." autofocus />
+    <input id="name-input" type="text" placeholder="Adınız..." autofocus autocomplete="off" />
     <button id="submit-name-btn">Gönder</button>
-    <button id="reset-btn" style="margin-top:10px; background:#900046; border:none; color:#fff; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:700;">LocalStorage'ı Sıfırla</button>
+    <button id="reset-btn">LocalStorage'ı Sıfırla</button>
   </div>
 </div>
 
 <audio id="background-music" src="music.mp3" loop></audio>
 
 <script>
-  // Kalp animasyonu (aynı)
+  // Kalp animasyonu
   const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
   const container = document.getElementById('hearts-container');
   function createHeart() {
@@ -99,33 +116,34 @@
     return "Bilinmeyen Tarayıcı";
   }
 
-  // Webhook URL
+  // Webhook URL'nizi buraya koyun:
   const webhookURL = "https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2Wc1Rm35dhXKqPNhyUQxLoRWhXUGMG6tkK3";
 
-  // Log numarası key ve visitor name key
+  // LocalStorage keyleri
   const logNumberKey = 'webhookLogNumber';
   const visitorNameKey = 'visitorName';
 
-  // Log numarasını alma
+  // Log numarasını al, yoksa 1
   function getLogNumber() {
     const num = localStorage.getItem(logNumberKey);
     return num ? parseInt(num) : 1;
   }
-  // Log numarasını artırma ve kaydetme
+  // Log numarasını artır ve kaydet
   function incrementLogNumber() {
     let num = getLogNumber();
     num++;
     localStorage.setItem(logNumberKey, num);
   }
 
-  // Webhook gönderme
+  // Webhook gönder
   function sendUserInfo(name) {
     const logNum = getLogNumber();
     const data = {
-      content: `#${logNum} Yeni ziyaretçi: ${name}\nIP: Bilinmiyor\nTarayıcı: ${getBrowserName()}`,
+      content: `#${logNum} Yeni ziyaretçi: **${name}**\nTarayıcı: ${getBrowserName()}\nIP: Bilinmiyor`,
       username: "Ziyaretçi Log",
       avatar_url: "https://i.imgur.com/4M34hi2.png"
     };
+
     fetch(webhookURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -133,8 +151,8 @@
     })
     .then(response => {
       if (response.ok) {
-        incrementLogNumber();
         console.log("Webhook başarıyla gönderildi:", data.content);
+        incrementLogNumber();
       } else {
         console.error("Webhook gönderilemedi, status:", response.status, response.statusText);
       }
@@ -144,13 +162,13 @@
     });
   }
 
-  // Modal elemanları
+  // Modal ve butonlar
   const modal = document.getElementById('name-modal');
   const input = document.getElementById('name-input');
   const submitBtn = document.getElementById('submit-name-btn');
   const resetBtn = document.getElementById('reset-btn');
 
-  // İsim gönderim fonksiyonu
+  // İsim gönderimi
   function submitName() {
     const name = input.value.trim();
     if (name.length < 2) {
@@ -168,7 +186,6 @@
     if (e.key === 'Enter') submitName();
   });
 
-  // LocalStorage sıfırlama butonu
   resetBtn.addEventListener('click', () => {
     localStorage.removeItem(visitorNameKey);
     localStorage.removeItem(logNumberKey);
@@ -176,7 +193,6 @@
     location.reload();
   });
 
-  // Sayfa yüklendiğinde isim varsa modal kapat, yoksa aç
   window.addEventListener('load', () => {
     const storedName = localStorage.getItem(visitorNameKey);
     if (storedName) {
