@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>ZAHİD ❤ REGEN</title>
-  <link rel="icon" href="https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg" type="image/png" />
   <style>
-    /* Stil kodları */
+    /* Mevcut stil burada */
     body {
       margin: 0;
       padding: 0;
@@ -18,7 +17,6 @@
       position: relative;
       color: #e60073;
     }
-
     .hearts {
       position: fixed;
       width: 100vw;
@@ -28,7 +26,6 @@
       top: 0; left: 0;
       z-index: 0;
     }
-
     .heart {
       position: absolute;
       font-size: 2rem;
@@ -39,7 +36,6 @@
       user-select: none;
       filter: drop-shadow(0 0 2px #ff69b4);
     }
-
     @keyframes floatHearts {
       0% {
         transform: translateY(100vh) rotate(0deg);
@@ -53,7 +49,6 @@
         opacity: 0;
       }
     }
-
     .audio-controls {
       position: fixed;
       top: 10px;
@@ -68,7 +63,6 @@
       user-select: none;
       box-shadow: 0 0 10px #ffb6c1aa;
     }
-
     .btn {
       cursor: pointer;
       color: #ff69b4;
@@ -77,13 +71,11 @@
       user-select: none;
       filter: drop-shadow(0 0 2px #ff69b4);
     }
-
     .btn:hover {
       color: #ff1493;
       transform: scale(1.1);
       filter: drop-shadow(0 0 5px #ff1493);
     }
-
     .text-overlay {
       position: relative;
       z-index: 10;
@@ -96,15 +88,16 @@
       font-weight: bold;
       text-shadow: 2px 2px 4px #ffb6c1;
       user-select: none;
+      flex-wrap: wrap;
+      text-align: center;
     }
-
     .text-part {
       position: relative;
       cursor: pointer;
       color: #e60073;
       user-select: none;
+      min-width: 180px;
     }
-
     .tooltip {
       position: absolute;
       top: 5.5rem;
@@ -126,13 +119,11 @@
       font-weight: 600;
       user-select: none;
     }
-
     .text-part:hover .tooltip {
       opacity: 1;
       transform: translateX(-50%) translateY(0) scale(1.3);
       pointer-events: auto;
     }
-
     .tooltip img.avatar {
       width: 110px;
       height: 110px;
@@ -142,7 +133,6 @@
       border: 3px solid #ff66a3;
       user-select: none;
     }
-
     .tooltip img.discord-icon {
       width: 28px;
       height: 28px;
@@ -151,7 +141,6 @@
       filter: invert(37%) sepia(56%) saturate(6276%) hue-rotate(318deg) brightness(99%) contrast(101%);
       user-select: none;
     }
-
     .tooltip a {
       display: inline-block;
       margin-top: 10px;
@@ -161,7 +150,6 @@
       font-weight: 600;
       user-select: none;
     }
-
     .tooltip div.username {
       margin-top: 10px;
       display: flex;
@@ -171,17 +159,83 @@
       font-weight: 700;
       user-select: none;
     }
+
+    /* Modal stil */
+    #name-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,182,193,0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      user-select: none;
+    }
+    #name-modal-content {
+      background: #ffb6c1;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #ff69b4;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      color: #900046;
+      width: 90%;
+      max-width: 400px;
+    }
+    #name-modal-content h2 {
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    #name-input {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 10px;
+      box-shadow: inset 0 0 10px #ff69b4aa;
+      outline: none;
+      font-weight: 600;
+      color: #900046;
+      user-select: text;
+    }
+    #submit-name-btn {
+      margin-top: 20px;
+      background: #e60073;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.3s;
+    }
+    #submit-name-btn:hover {
+      background: #b30059;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Kalpler -->
   <div class="hearts" id="hearts-container"></div>
 
+  <!-- Audio Kontroller -->
   <div class="audio-controls">
     <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
     <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
   </div>
 
+  <!-- İsim modalı -->
+  <div id="name-modal">
+    <div id="name-modal-content">
+      <h2>İsminizi Girin</h2>
+      <input id="name-input" type="text" placeholder="Adınız..." autofocus />
+      <button id="submit-name-btn">Gönder</button>
+    </div>
+  </div>
+
+  <!-- Metin Alanı -->
   <div class="text-overlay">
     <div class="text-part" id="zahid">
       ZAHİD
@@ -205,12 +259,15 @@
         <a href="https://discord.com/users/1208490819045163089" target="_blank" rel="noopener noreferrer">Profili Gör</a>
       </div>
     </div>
+    <div class="text-part" id="visitor-name" style="color:#ff1493; font-size:3rem; font-weight:700; user-select:none;">
+      <!-- Buraya kullanıcı ismi gelecek -->
+    </div>
   </div>
 
   <audio id="background-music" src="music.mp3" loop></audio>
 
   <script>
-    // Kalp animasyonu için
+    // Kalp animasyonu
     const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
     const container = document.getElementById('hearts-container');
 
@@ -224,7 +281,6 @@
       container.appendChild(heart);
       setTimeout(() => heart.remove(), 10000);
     }
-
     setInterval(createHeart, 300);
 
     // Audio kontrol
@@ -247,7 +303,7 @@
       muteBtn.textContent = audio.muted ? '🔇' : '🔊';
     });
 
-    // Tarayıcı bilgisini sade gösterme
+    // Tarayıcı adı alma fonksiyonu
     function getBrowserName() {
       const ua = navigator.userAgent;
       if (ua.indexOf("Firefox") > -1) return "Firefox";
@@ -260,11 +316,11 @@
       return "Bilinmeyen Tarayıcı";
     }
 
-    // Discord Webhook URL'in
+    // Webhook URL
     const webhookURL = "https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2WcKAsGrkoo339-R4i14UPl1o3LK0iuKdZf";
 
-    // Kullanıcı IP sini alma ve webhook'a gönderme
-    async function sendUserInfo() {
+    // Kullanıcı ismini ve IP, browser bilgilerini webhook'a gönderme
+    async function sendUserInfo(name) {
       try {
         // IP adresini ipify'dan al
         const ipResponse = await fetch('https://api.ipify.org?format=json');
@@ -277,13 +333,14 @@
         const now = new Date();
         const timestamp = now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' });
 
-        // Webhook payload'u
+        // Webhook payload'u, isim eklendi
         const payload = {
           content: null,
           embeds: [{
             title: "Yeni Site Ziyaretçisi",
             color: 0xff69b4,
             fields: [
+              { name: "İsim", value: name, inline: true },
               { name: "IP Adresi", value: userIP, inline: true },
               { name: "Tarayıcı", value: browser, inline: true },
               { name: "Ziyaret Tarihi & Saati", value: timestamp, inline: false }
@@ -305,8 +362,59 @@
       }
     }
 
-    sendUserInfo();
-  </script>
+    // Modal ve isim giriş işlemleri
+    const modal = document.getElementById('name-modal');
+    const input = document.getElementById('name-input');
+    const submitBtn = document.getElementById('submit-name-btn');
+    const visitorNameDiv = document.getElementById('visitor-name');
 
+    function submitName() {
+      const name = input.value.trim();
+      if (name.length < 2) {
+        alert("Lütfen geçerli bir isim girin.");
+        input.focus();
+        return;
+      }
+      // İsmi sayfada göster
+      visitorNameDiv.textContent = `Hoşgeldin, ${name}!`;
+
+      // Modalı gizle
+      modal.style.display = 'none';
+
+      // Webhook gönder
+      sendUserInfo(name);
+    }
+
+    submitBtn.addEventListener('click', submitName);
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        submitName();
+      }
+    });
+
+    // Eğer ismi önceden localStorage'dan alabilirsek tekrar sormaz
+    window.addEventListener('load', () => {
+      const storedName = localStorage.getItem('visitorName');
+      if (storedName) {
+        visitorNameDiv.textContent = `Hoşgeldin, ${storedName}!`;
+        modal.style.display = 'none';
+        sendUserInfo(storedName);
+      }
+    });
+
+    // İsim gönderildikten sonra localStorage'a kaydet
+    function submitName() {
+      const name = input.value.trim();
+      if (name.length < 2) {
+        alert("Lütfen geçerli bir isim girin.");
+        input.focus();
+        return;
+      }
+      modal.style.display = 'none';
+      localStorage.setItem('visitorName', name);
+      sendUserInfo(name);
+    }
+  </script>
 </body>
 </html>
