@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Discord Onaylı Panel</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #121212; 
+      color: #fff; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      margin: 0;
+      flex-direction: column;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      background: #7289da;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">Giriş yapılıyor...</div>
+
+<script>
+  const clientId = "DISCORD_CLIENT_ID_HERE";  // Discord uygulama client ID'nizi buraya yazın
+  const redirectUri = "https://seninsite.github.io/panel.html";  // Panel URL'nizi buraya yazın
+  const authorizedUserId = "DISCORD_USER_ID_NIZ"; // Sadece bu Discord kullanıcı ID'sine izin ver
+
+  const content = document.getElementById("content");
+
+  // OAuth yönlendirme için URL hazırla
+  const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
+
+  // URL'deki access_token parametresini al
+  function getAccessToken() {
+    const hash = window.location.hash;
+    if (!hash) return null;
+    const params = new URLSearchParams(hash.substr(1));
+    return params.get("access_token");
+  }
+
+  async function fetchDiscordUser(token) {
+    const res = await fetch("https://discord.com/api/users/@me", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error("Token geçersiz");
+    return res.json();
+  }
+
+  async function main() {
+    const token = getAccessToken();
+
+    if (!token) {
+      // Giriş yok, Discord OAuth sayfasına gönder
+      content.innerHTML = `<button id="loginBtn">Discord ile Giriş Yap</button>`;
+      document.getElementById("loginBtn").onclick = () => {
+        window.location.href = discordAuthUrl;
+      }
+      return;
+    }
+
+    try {
+      const user = await fetchDiscordUser(token);
+
+      if (user.id === authorizedUserId) {
+        // Yetkili kullanıcı
+        content.innerHTML = `<h1>Hoşgeldin, ${user.username}!</h1>
+          <p>Panel erişimi sağlandı.</p>
+          <button id="logoutBtn">Çıkış Yap</button>
+          <script>
+            document.getElementById('logoutBtn').onclick = () => {
+              window.location.href = '${redirectUri}';
+            };
+          </script>
+        `;
+        // Buraya panelin javascriptini veya linklerini ekleyebilirsin
+      } else {
+        content.innerHTML = `<h1>⚠️ Erişim Reddedildi</h1>
+          <p>Bu kullanıcı paneli görüntüleyemez.</p>`;
+      }
+    } catch(e) {
+      content.innerHTML = `<p>Girişte hata: ${e.message}</p>`;
+    }
+  }
+
+  main();
+</script>
+
+</body>
+</html>
