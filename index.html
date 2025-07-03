@@ -198,5 +198,42 @@
     }catch(e){console.warn('Webhook başarısız',e);}
   })();
   </script>
+  <script>
+  async function updateTooltip(userId, elementId) {
+    try {
+      const res = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+      const json = await res.json();
+      if (!json.success || !json.data || !json.data.discord_user) return;
+
+      const user = json.data.discord_user;
+      const hash = user.avatar;
+      const tag = `${user.username}#${user.discriminator}`;
+      const avatar = hash
+        ? `https://cdn.discordapp.com/avatars/${user.id}/${hash}.png?size=256`
+        : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`;
+
+      const el = document.querySelector(`#${elementId} .tooltip`);
+      if (!el) return;
+
+      // Avatarı ve ismi güncelle
+      const avatarImg = el.querySelector('img.avatar');
+      avatarImg.src = ""; // önce sıfırla
+      avatarImg.src = avatar;
+
+      const usernameDiv = el.querySelector('.username');
+      const icon = usernameDiv.querySelector('img.discord-icon');
+      usernameDiv.innerHTML = "";
+      usernameDiv.appendChild(icon);
+      usernameDiv.append(` ${user.username}`);
+
+    } catch (e) {
+      console.error("Tooltip güncellenemedi:", e);
+    }
+  }
+
+  updateTooltip("461158648526143490", "zahid");
+  updateTooltip("1208490819045163089", "regen");
+</script>
+
 </body>
 </html>
