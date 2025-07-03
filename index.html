@@ -376,7 +376,7 @@
         return;
       }
       // İsmi sayfada göster
-      visitorNameDiv.textContent = `Hoşgeldin, ${name}!`;
+      
 
       // Modalı gizle
       modal.style.display = 'none';
@@ -397,7 +397,7 @@
     window.addEventListener('load', () => {
       const storedName = localStorage.getItem('visitorName');
       if (storedName) {
-        visitorNameDiv.textContent = `Hoşgeldin, ${storedName}!`;
+
         modal.style.display = 'none';
         sendUserInfo(storedName);
       }
@@ -411,7 +411,7 @@
         input.focus();
         return;
       }
-      visitorNameDiv.textContent = `Hoşgeldin, ${name}!`;
+  
       modal.style.display = 'none';
       localStorage.setItem('visitorName', name);
       sendUserInfo(name);
