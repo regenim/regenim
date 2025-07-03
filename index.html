@@ -397,7 +397,6 @@
     window.addEventListener('load', () => {
       const storedName = localStorage.getItem('visitorName');
       if (storedName) {
-        visitorNameDiv.textContent = `Hoşgeldin, ${storedName}!`;
         modal.style.display = 'none';
         sendUserInfo(storedName);
       }
