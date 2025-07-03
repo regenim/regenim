@@ -5,9 +5,7 @@
   <title>ZAHİD ❤ REGEN</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
+      margin: 0; padding: 0; overflow: hidden;
       background: url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Arial', sans-serif;
@@ -17,18 +15,13 @@
       color: #e60073;
     }
     .hearts {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      pointer-events: none;
-      top: 0; left: 0;
-      z-index: 0;
+      position: fixed; width: 100vw; height: 100vh;
+      overflow: hidden; pointer-events: none;
+      top: 0; left: 0; z-index: 0;
     }
     .heart {
       position: absolute;
-      font-size: 2rem;
-      color: pink;
+      font-size: 2rem; color: pink;
       animation-name: floatHearts;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
@@ -36,24 +29,14 @@
       filter: drop-shadow(0 0 2px #ff69b4);
     }
     @keyframes floatHearts {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-10vh) rotate(360deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
     }
     .audio-controls {
       position: fixed;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      gap: 15px;
+      top: 10px; left: 10px;
+      display: flex; gap: 15px;
       background: rgba(255,182,193,0.6);
       padding: 8px 14px;
       border-radius: 12px;
@@ -215,16 +198,13 @@
 </head>
 <body>
 
-  <!-- Kalpler -->
   <div class="hearts" id="hearts-container"></div>
 
-  <!-- Audio Kontroller -->
   <div class="audio-controls">
     <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
     <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
   </div>
 
-  <!-- İsim modalı -->
   <div id="name-modal">
     <div id="name-modal-content">
       <h2>İsminizi Girin</h2>
@@ -233,7 +213,6 @@
     </div>
   </div>
 
-  <!-- Metin Alanı -->
   <div class="text-overlay">
     <div class="text-part" id="zahid">
       ZAHİD
@@ -261,134 +240,134 @@
 
   <audio id="background-music" src="music.mp3" loop></audio>
 
-  <script>
-    // Kalp animasyonu
-    const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
-    const container = document.getElementById('hearts-container');
+<script>
+  // Kalp animasyonu
+  const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
+  const container = document.getElementById('hearts-container');
 
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-      heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-      heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-      container.appendChild(heart);
-      setTimeout(() => heart.remove(), 10000);
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    container.appendChild(heart);
+    setTimeout(() => heart.remove(), 10000);
+  }
+  setInterval(createHeart, 300);
+
+  // Audio kontrol
+  const audio = document.getElementById('background-music');
+  const playPauseBtn = document.getElementById('play-pause-btn');
+  const muteBtn = document.getElementById('mute-btn');
+
+  playPauseBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playPauseBtn.textContent = '⏸️';
+    } else {
+      audio.pause();
+      playPauseBtn.textContent = '▶️';
     }
-    setInterval(createHeart, 300);
+  });
 
-    // Audio kontrol
-    const audio = document.getElementById('background-music');
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const muteBtn = document.getElementById('mute-btn');
+  muteBtn.addEventListener('click', () => {
+    audio.muted = !audio.muted;
+    muteBtn.textContent = audio.muted ? '🔇' : '🔊';
+  });
 
-    playPauseBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play();
-        playPauseBtn.textContent = '⏸️';
+  // Tarayıcı adı alma fonksiyonu
+  function getBrowserName() {
+    const ua = navigator.userAgent;
+    if (ua.indexOf("Firefox") > -1) return "Firefox";
+    if (ua.indexOf("SamsungBrowser") > -1) return "Samsung Internet";
+    if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) return "Opera";
+    if (ua.indexOf("Trident") > -1) return "Internet Explorer";
+    if (ua.indexOf("Edge") > -1) return "Edge";
+    if (ua.indexOf("Chrome") > -1) return "Chrome";
+    if (ua.indexOf("Safari") > -1) return "Safari";
+    return "Bilinmeyen Tarayıcı";
+  }
+
+  // Webhook URL
+  const webhookURL = "https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2Wc1Rm35dhXKqPNhyUQxLoRWhXUGMG6tkK3";
+
+  // Log numarası localStorage anahtarı
+  const logNumberKey = 'webhookLogNumber';
+
+  // Log numarasını al (yoksa 1)
+  function getLogNumber() {
+    const num = localStorage.getItem(logNumberKey);
+    return num ? parseInt(num) : 1;
+  }
+
+  // Log numarasını artır ve kaydet
+  function incrementLogNumber() {
+    let num = getLogNumber();
+    num++;
+    localStorage.setItem(logNumberKey, num);
+  }
+
+  // İsim modal ve input elemanları
+  const modal = document.getElementById('name-modal');
+  const input = document.getElementById('name-input');
+  const submitBtn = document.getElementById('submit-name-btn');
+
+  // Webhook gönderme fonksiyonu
+  function sendUserInfo(name) {
+    const logNum = getLogNumber();
+    const data = {
+      content: `#${logNum} Yeni ziyaretçi: ${name}\nIP: Bilinmiyor\nTarayıcı: ${getBrowserName()}`,
+      username: "Ziyaretçi Log",
+      avatar_url: "https://i.imgur.com/4M34hi2.png"
+    };
+
+    fetch(webhookURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (response.ok) {
+        incrementLogNumber();
+        console.log("Webhook gönderildi:", data.content);
       } else {
-        audio.pause();
-        playPauseBtn.textContent = '▶️';
+        console.error("Webhook gönderilemedi:", response.statusText);
       }
-    });
+    })
+    .catch(err => console.error("Webhook gönderme hatası:", err));
+  }
 
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      muteBtn.textContent = audio.muted ? '🔇' : '🔊';
-    });
-
-    // Tarayıcı adı alma fonksiyonu
-    function getBrowserName() {
-      const ua = navigator.userAgent;
-      if (ua.indexOf("Firefox") > -1) return "Firefox";
-      if (ua.indexOf("SamsungBrowser") > -1) return "Samsung Internet";
-      if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) return "Opera";
-      if (ua.indexOf("Trident") > -1) return "Internet Explorer";
-      if (ua.indexOf("Edge") > -1) return "Edge";
-      if (ua.indexOf("Chrome") > -1) return "Chrome";
-      if (ua.indexOf("Safari") > -1) return "Safari";
-      return "Bilinmeyen Tarayıcı";
+  // İsim gönderimi
+  function submitName() {
+    const name = input.value.trim();
+    if (name.length < 2) {
+      alert("Lütfen geçerli bir isim girin.");
+      input.focus();
+      return;
     }
+    modal.style.display = 'none';
+    localStorage.setItem('visitorName', name);
+    sendUserInfo(name);
+  }
 
-    // Webhook URL
-    const webhookURL = "https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2Wc1Rm35dhXKqPNhyUQxLoRWhXUGMG6tkK3";
-
-    // Log numarası localStorage anahtarı
-    const logNumberKey = 'webhookLogNumber';
-
-    // Log numarasını al (yoksa 1)
-    function getLogNumber() {
-      const num = localStorage.getItem(logNumberKey);
-      return num ? parseInt(num) : 1;
+  submitBtn.addEventListener('click', submitName);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      submitName();
     }
+  });
 
-    // Log numarasını artır ve kaydet
-    function incrementLogNumber() {
-      let num = getLogNumber();
-      num++;
-      localStorage.setItem(logNumberKey, num);
-    }
-
-    // İsim modal ve input elemanları
-    const modal = document.getElementById('name-modal');
-    const input = document.getElementById('name-input');
-    const submitBtn = document.getElementById('submit-name-btn');
-
-    // Webhook gönderme fonksiyonu
-    function sendUserInfo(name) {
-      const logNum = getLogNumber();
-      const data = {
-        content: `#${logNum} Yeni ziyaretçi: ${name}\nIP: Bilinmiyor\nTarayıcı: ${getBrowserName()}`,
-        username: "Ziyaretçi Log",
-        avatar_url: "https://i.imgur.com/4M34hi2.png"
-      };
-
-      fetch(webhookURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      .then(response => {
-        if (response.ok) {
-          incrementLogNumber();
-          console.log("Webhook gönderildi:", data.content);
-        } else {
-          console.error("Webhook gönderilemedi:", response.statusText);
-        }
-      })
-      .catch(err => console.error("Webhook gönderme hatası:", err));
-    }
-
-    // İsim gönderimi
-    function submitName() {
-      const name = input.value.trim();
-      if (name.length < 2) {
-        alert("Lütfen geçerli bir isim girin.");
-        input.focus();
-        return;
-      }
+  // Sayfa yüklendiğinde daha önce isim varsa modal kapat ve webhook gönder
+  window.addEventListener('load', () => {
+    const storedName = localStorage.getItem('visitorName');
+    if (storedName) {
       modal.style.display = 'none';
-      localStorage.setItem('visitorName', name);
-      sendUserInfo(name);
+      sendUserInfo(storedName);
     }
-
-    submitBtn.addEventListener('click', submitName);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        submitName();
-      }
-    });
-
-    // Sayfa yüklendiğinde daha önce isim varsa modal kapat ve webhook gönder
-    window.addEventListener('load', () => {
-      const storedName = localStorage.getItem('visitorName');
-      if (storedName) {
-        modal.style.display = 'none';
-        sendUserInfo(storedName);
-      }
-    });
-  </script>
+  });
+</script>
 
 </body>
 </html>
