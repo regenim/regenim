@@ -3,22 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <title>zahid dinleniyor</title>
+
+  <!-- favicon: uyuma emojisi -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2216%22>💤</text></svg>">
+
+  <!-- --- ERKEN KİLİT --- -->
+  <style>html{display:none}</style>
+  <script>
+    (async () => {
+      try {
+        const cfg = await fetch('/config.json', {cache:'no-store'}).then(r => r.json());
+        if (cfg.activePage === 'black') {
+          // izin verildi ➜ sayfayı görünür yap
+          document.documentElement.style.display = 'block';
+        } else {
+          // izin yok ➜ index.html'e yönlendir
+          location.replace('/index.html');
+        }
+      } catch (e) {
+        // config alınamazsa güvenli tarafta kal
+        location.replace('/index.html');
+      }
+    })();
+  </script>
+  <noscript>
+    <meta http-equiv="refresh" content="0;url=/index.html">
+  </noscript>
+  <!-- --- /ERKEN KİLİT --- -->
+
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      font-size: 1.5rem;
-      font-style: italic;
-      text-transform: lowercase;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      letter-spacing: 1px;
+    html, body{
+      margin:0;
+      padding:0;
+      background:#000;
+      color:#fff;
+      font-family:'Segoe UI',sans-serif;
+      font-size:1.5rem;
+      font-style:italic;
+      text-transform:lowercase;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      letter-spacing:1px;
     }
   </style>
 </head>
