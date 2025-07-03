@@ -32,16 +32,16 @@
   <div id="content">Giriş yapılıyor...</div>
 
 <script>
-  const clientId = "1390293095551336610";  // Discord uygulama client ID'nizi buraya yazın
-  const redirectUri = "https://zahid.life/panel.html";  // Panel URL'nizi buraya yazın
-  const authorizedUserId = "461158648526143490"; // Sadece bu Discord kullanıcı ID'sine izin ver
+  const clientId = "1390293095551336610";  // Discord uygulama client ID'n
+  const redirectUri = "https://zahid.life/panel.html";  // Panel URL'n
+  const authorizedUserId = "461158648526143490"; // Senin Discord kullanıcı ID'n
 
   const content = document.getElementById("content");
 
-  // OAuth yönlendirme için URL hazırla
+  // Discord OAuth2 URL'si (token tipi ile)
   const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
 
-  // URL'deki access_token parametresini al
+  // URL hash'ten access_token'ı alır
   function getAccessToken() {
     const hash = window.location.hash;
     if (!hash) return null;
@@ -49,11 +49,12 @@
     return params.get("access_token");
   }
 
+  // Discord API'den kullanıcı bilgisi alır
   async function fetchDiscordUser(token) {
     const res = await fetch("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) throw new Error("Token geçersiz");
+    if (!res.ok) throw new Error("Token geçersiz veya süresi dolmuş");
     return res.json();
   }
 
@@ -61,11 +62,11 @@
     const token = getAccessToken();
 
     if (!token) {
-      // Giriş yok, Discord OAuth sayfasına gönder
+      // Token yok, giriş butonunu göster
       content.innerHTML = `<button id="loginBtn">Discord ile Giriş Yap</button>`;
       document.getElementById("loginBtn").onclick = () => {
         window.location.href = discordAuthUrl;
-      }
+      };
       return;
     }
 
@@ -73,20 +74,21 @@
       const user = await fetchDiscordUser(token);
 
       if (user.id === authorizedUserId) {
-        // Yetkili kullanıcı
-        content.innerHTML = `<h1>Hoşgeldin, ${user.username}!</h1>
+        content.innerHTML = `
+          <h1>Hoşgeldin, ${user.username}!</h1>
           <p>Panel erişimi sağlandı.</p>
           <button id="logoutBtn">Çıkış Yap</button>
-          <script>
-            document.getElementById('logoutBtn').onclick = () => {
-              window.location.href = '${redirectUri}';
-            };
-          </script>
         `;
-        // Buraya panelin javascriptini veya linklerini ekleyebilirsin
+        document.getElementById('logoutBtn').onclick = () => {
+          // Çıkış için token'ı temizlemek adına hash'i kaldır ve sayfayı yenile
+          window.location.href = redirectUri;
+        };
+        // Buraya panel içeriğini ekleyebilirsin
       } else {
-        content.innerHTML = `<h1>⚠️ Erişim Reddedildi</h1>
-          <p>Bu kullanıcı paneli görüntüleyemez.</p>`;
+        content.innerHTML = `
+          <h1>⚠️ Erişim Reddedildi</h1>
+          <p>Bu kullanıcı paneli görüntüleyemez.</p>
+        `;
       }
     } catch(e) {
       content.innerHTML = `<p>Girişte hata: ${e.message}</p>`;
@@ -95,6 +97,5 @@
 
   main();
 </script>
-
 </body>
 </html>
