@@ -9,7 +9,7 @@ app.use(cors());  // <-- BURAYA EKLENDİ
 const PORT = process.env.PORT || 3000;
 
 let presenceData = {};
-
+  
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
