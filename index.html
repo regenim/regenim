@@ -2,208 +2,61 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>ZAHİD ❤ REGEN</title>
-  <link rel="icon" href="https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg" />
-
-  <script>
-  (async () => {
-    try {
-      const res = await fetch('config.json?' + Date.now());
-      const cfg = await res.json();
-      if (cfg.active === 'black') location.replace('black.html');
-    } catch (e) {
-      console.warn('config.json okunamadı:', e);
-    }
-  })();
-  </script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Discord Kullanıcı Durumu</title>
   <style>
-    body {
-      margin: 0; padding: 0; overflow: hidden;
-      background: url('https://i.pinimg.com/474x/82/90/66/829066cdee2b5e3ea93e70b538cf2ad6.jpg') no-repeat center/cover fixed;
-      font-family: Arial, sans-serif; user-select: none; height: 100vh;
-      color: #e60073;
+    body { font-family: Arial; background: #121212; color: #fff; padding: 20px; }
+    .card { background: #1e1e1e; padding: 20px; border-radius: 10px; width: 300px; }
+    .status-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      display: inline-block; margin-right: 8px;
     }
-    .hearts { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-    .heart {
-      position: absolute; font-size: 2rem; color: pink;
-      animation: floatHearts linear infinite;
-      filter: drop-shadow(0 0 2px #ff69b4);
-    }
-    @keyframes floatHearts {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      20% { opacity: 1; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
-    .audio-controls {
-      position: fixed; top: 10px; left: 10px; display: flex; gap: 15px;
-      background: rgba(255,182,193,.6); padding: 8px 14px; border-radius: 12px;
-      z-index: 20; align-items: center; box-shadow: 0 0 10px #ffb6c1aa;
-    }
-    .btn {
-      cursor: pointer; color: #ff69b4; font-size: 2.5rem;
-      transition: 0.3s; filter: drop-shadow(0 0 2px #ff69b4);
-    }
-    .btn:hover {
-      color: #ff1493; transform: scale(1.1);
-      filter: drop-shadow(0 0 5px #ff1493);
-    }
-    .text-overlay {
-      position: relative; z-index: 10; height: 100vh;
-      display: flex; justify-content: center; align-items: center;
-      gap: 40px; font-size: 6rem; font-weight: bold;
-      text-shadow: 2px 2px 4px #ffb6c1;
-    }
-    .text-part { position: relative; cursor: pointer; color: #e60073; }
-    .tooltip {
-      position: absolute; top: 5.5rem; left: 50%; transform: translate(-50%,15px) scale(1.2);
-      background: #ffb6c1; border-radius: 12px; padding: 12px 18px;
-      box-shadow: 0 4px 12px rgba(255,182,193,.6); opacity: 0;
-      transition: 0.3s; pointer-events: none; width: 320px; text-align: center;
-      font-family: "Segoe UI", sans-serif; font-size: 18px; font-weight: 600;
-      color: #b30059; z-index: 30;
-    }
-    .text-part:hover .tooltip {
-      opacity: 1; transform: translate(-50%,0) scale(1.3); pointer-events: auto;
-    }
-    .tooltip img.avatar {
-      width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
-      margin-bottom: 15px; border: 3px solid #ff66a3;
-    }
-    .tooltip img.discord-icon {
-      width: 28px; height: 28px; vertical-align: middle; margin-right: 10px;
-      filter: invert(37%) sepia(56%) saturate(6276%) hue-rotate(318deg) brightness(99%) contrast(101%);
-    }
-    .tooltip a {
-      display: inline-block; margin-top: 10px; color: #d43873;
-      text-decoration: none; font-size: 16px; font-weight: 600;
-    }
-    .tooltip .username {
-      margin-top: 10px; display: flex; align-items: center; justify-content: center;
-      gap: 10px; font-weight: 700;
-    }
+    .status-online { background: #43b581; }
+    .status-idle { background: #faa61a; }
+    .status-dnd { background: #f04747; }
+    .status-offline { background: #747f8d; }
   </style>
 </head>
 <body>
 
-<div class="hearts" id="hearts-container"></div>
-
-<div class="audio-controls">
-  <div id="play-pause-btn" class="btn" title="Oynat / Duraklat">▶️</div>
-  <div id="mute-btn" class="btn" title="Ses Aç/Kapat">🔊</div>
-</div>
-
-<div class="text-overlay">
-  <div class="text-part" id="zahid">
-    ZAHİD
-    <div class="tooltip">
-      <img class="avatar" src="" alt="avatar zahid">
-      <div class="username">
-        <img class="discord-icon" src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/>
-        zahid
-      </div>
-      <a href="https://discord.com/users/461158648526143490" target="_blank">Profili Gör</a>
-    </div>
+  <div class="card" id="presence">
+    <p>Yükleniyor...</p>
   </div>
-  <div class="text-part" id="regen">
-    ❤ REGEN
-    <div class="tooltip">
-      <img class="avatar" src="" alt="avatar regen">
-      <div class="username">
-        <img class="discord-icon" src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/>
-        regen
-      </div>
-      <a href="https://discord.com/users/1208490819045163089" target="_blank">Profili Gör</a>
-    </div>
-  </div>
-</div>
 
-<audio id="background-music" src="music.mp3" loop></audio>
+  <script>
+    const apiUrl = "https://senin-replit-adresin.username.repl.co/api/discord-presence"; // kendi linkinle değiştir
 
-<script>
-const hearts = ['❤','💕','💞','💓','💗','💖','💝','💘','💟','❣️','❤️‍🔥','❤️‍🩹','💌'];
-const heartsBox = document.getElementById('hearts-container');
-setInterval(() => {
-  const d = document.createElement('div');
-  d.className = 'heart';
-  d.textContent = hearts[Math.random() * hearts.length | 0];
-  d.style.left = Math.random() * 100 + 'vw';
-  d.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-  d.style.animationDuration = (Math.random() * 5 + 5) + 's';
-  heartsBox.appendChild(d);
-  setTimeout(() => d.remove(), 10000);
-}, 300);
+    function getStatusClass(status) {
+      switch (status) {
+        case "online": return "status-online";
+        case "idle": return "status-idle";
+        case "dnd": return "status-dnd";
+        default: return "status-offline";
+      }
+    }
 
-const audio   = document.getElementById('background-music');
-const playBtn = document.getElementById('play-pause-btn');
-const muteBtn = document.getElementById('mute-btn');
-playBtn.onclick = e => {
-  if (audio.paused) { audio.play(); e.target.textContent = '⏸️'; }
-  else { audio.pause(); e.target.textContent = '▶️'; }
-};
-muteBtn.onclick = e => {
-  audio.muted = !audio.muted;
-  e.target.textContent = audio.muted ? '🔇' : '🔊';
-};
+    async function fetchPresence() {
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
 
-async function updateTooltip(userId, selector) {
-  try {
-    const { success, data } = await fetch(`https://api.lanyard.rest/v1/users/${userId}`).then(r => r.json());
-    if (!success) return;
-    const u = data.discord_user;
-    const avatarURL = u.avatar
-      ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_') ? 'gif' : 'png'}?size=256`
-      : `https://cdn.discordapp.com/embed/avatars/${parseInt(u.discriminator) % 5}.png`;
+        const statusClass = getStatusClass(data.status);
+        const html = `
+          <img src="${data.avatar_url}" style="width:100px; border-radius:50%;" alt="Avatar"><br><br>
+          <span class="status-dot ${statusClass}"></span> <strong>Durum:</strong> ${data.status}<br>
+          <strong>Etkinlik:</strong> ${data.activity}<br>
+          ${data.activity_image_url ? `<img src="${data.activity_image_url}" style="width:100%; margin-top:10px; border-radius:8px;">` : ""}
+        `;
+        document.getElementById("presence").innerHTML = html;
+      } catch (err) {
+        document.getElementById("presence").innerHTML = "<p>Veri alınamadı.</p>";
+        console.error(err);
+      }
+    }
 
-    const tip = document.querySelector(selector);
-    tip.querySelector('img.avatar').src = avatarURL;
-    tip.querySelector('.username').innerHTML =
-      `<img class="discord-icon" src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"/> ${u.username}`;
-  } catch (e) {
-    console.warn('Discord verisi alınamadı:', e);
-  }
-}
-function refreshProfiles() {
-  updateTooltip('461158648526143490', '#zahid .tooltip');
-  updateTooltip('1208490819045163089', '#regen .tooltip');
-}
-refreshProfiles();
-setInterval(refreshProfiles, 5 * 60 * 1000);
-
-(async () => {
-  const webhook = 'https://ptb.discord.com/api/webhooks/1390120088719458465/5zM_-RCRoKEIaZDF9AsEHR-cgNDbiCS1U2WcKAsGrkoo339-R4i14UPl1o3LK0iuKdZf';
-  try {
-    const ip = await fetch('https://api.ipify.org?format=json').then(r => r.json()).then(j => j.ip);
-    const ua = navigator.userAgent;
-    const br = /Firefox/.test(ua) ? 'Firefox'
-              : /SamsungBrowser/.test(ua) ? 'Samsung Internet'
-              : /OPR|Opera/.test(ua) ? 'Opera'
-              : /Edg/.test(ua) ? 'Edge'
-              : /Chrome/.test(ua) ? 'Chrome'
-              : /Safari/.test(ua) ? 'Safari'
-              : 'Diğer';
-    const now = new Date();
-    fetch(webhook, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        embeds: [{
-          title: 'Yeni Ziyaretçi', color: 0xff69b4,
-          fields: [
-            { name: 'IP', value: ip, inline: true },
-            { name: 'Tarayıcı', value: br, inline: true },
-            { name: 'Zaman', value: now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' }) }
-          ],
-          footer: { text: 'ZAHİD ❤ REGEN' },
-          timestamp: now.toISOString()
-        }]
-      })
-    });
-  } catch (e) {
-    console.warn('Webhook başarısız', e);
-  }
-})();
-</script>
+    fetchPresence();
+    setInterval(fetchPresence, 30000); // Her 30 saniyede bir güncelle
+  </script>
 
 </body>
 </html>
