@@ -1,62 +1,102 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Discord Kullanıcı Durumu</title>
-  <style>
-    body { font-family: Arial; background: #121212; color: #fff; padding: 20px; }
-    .card { background: #1e1e1e; padding: 20px; border-radius: 10px; width: 300px; }
-    .status-dot {
-      width: 12px; height: 12px; border-radius: 50%;
-      display: inline-block; margin-right: 8px;
+const { Client, GatewayIntentBits, Partials, ActivityType } = require("discord.js");
+const express = require("express");
+const cors = require("cors"); // <-- BURAYA EKLENDİ
+require("dotenv").config();
+
+const app = express();
+app.use(cors());  // <-- BURAYA EKLENDİ
+
+const PORT = process.env.PORT || 3000;
+
+let presenceData = {};
+
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildMembers
+  ],
+  partials: [Partials.User]
+});
+
+client.once("ready", () => {
+  console.log(`Bot hazır: ${client.user.tag}`);
+  trackUser(process.env.USER_ID);
+});
+
+async function trackUser(userId) {
+  const guilds = client.guilds.cache;
+
+  for (const [guildId, guild] of guilds) {
+    try {
+      const member = await guild.members.fetch(userId);
+      updatePresence(member);
+      break;
+    } catch (err) {
+      // Kullanıcı bu sunucuda yoksa diğer sunucuya geç
+      continue;
     }
-    .status-online { background: #43b581; }
-    .status-idle { background: #faa61a; }
-    .status-dnd { background: #f04747; }
-    .status-offline { background: #747f8d; }
-  </style>
-</head>
-<body>
+  }
+}
 
-  <div class="card" id="presence">
-    <p>Yükleniyor...</p>
-  </div>
+client.on("presenceUpdate", (oldPresence, newPresence) => {
+  if (newPresence.userId === process.env.USER_ID) {
+    updatePresence(newPresence.member);
+  }
+});
 
-  <script>
-    const apiUrl = "https://replit.com/@hjkszpj885/ad#index.js"; // kendi linkinle değiştir
+function updatePresence(member) {
+  const user = member.user;
 
-    function getStatusClass(status) {
-      switch (status) {
-        case "online": return "status-online";
-        case "idle": return "status-idle";
-        case "dnd": return "status-dnd";
-        default: return "status-offline";
+  const activities = member.presence?.activities.map(act => {
+    const startTimestamp = act.timestamps?.start || null;
+    const endTimestamp = act.timestamps?.end || null;
+
+    let elapsed = null;
+    let totalDuration = null;
+
+    if (startTimestamp) {
+      const now = Date.now();
+      elapsed = Math.floor((now - startTimestamp) / 1000);
+      if (endTimestamp) {
+        totalDuration = Math.floor((endTimestamp - startTimestamp) / 1000);
       }
     }
 
-    async function fetchPresence() {
-      try {
-        const res = await fetch(apiUrl);
-        const data = await res.json();
+    return {
+      name: act.name,
+      type: ActivityType[act.type],
+      details: act.details || null,
+      state: act.state || null,
+      elapsedSeconds: elapsed,
+      totalSeconds: totalDuration,
+      assets: act.assets || null,
+    };
+  }) || [];
 
-        const statusClass = getStatusClass(data.status);
-        const html = `
-          <img src="${data.avatar_url}" style="width:100px; border-radius:50%;" alt="Avatar"><br><br>
-          <span class="status-dot ${statusClass}"></span> <strong>Durum:</strong> ${data.status}<br>
-          <strong>Etkinlik:</strong> ${data.activity}<br>
-          ${data.activity_image_url ? `<img src="${data.activity_image_url}" style="width:100%; margin-top:10px; border-radius:8px;">` : ""}
-        `;
-        document.getElementById("presence").innerHTML = html;
-      } catch (err) {
-        document.getElementById("presence").innerHTML = "<p>Veri alınamadı.</p>";
-        console.error(err);
-      }
-    }
+  presenceData = {
+    username: user.username,
+    discriminator: user.discriminator,
+    avatarURL: user.displayAvatarURL({ dynamic: true }),
+    status: member.presence?.status || "offline",
+    activities,
+    flags: user.flags?.toArray() || []
+  };
 
-    fetchPresence();
-    setInterval(fetchPresence, 30000); // Her 30 saniyede bir güncelle
-  </script>
+  console.log("Güncellendi:", presenceData);
+}
 
-</body>
-</html>
+app.get("/", (req, res) => {
+  res.send("Bot çalışıyor.");
+});
+
+app.get("/api/discord-presence", (req, res) => {
+  res.json(presenceData);
+});
+
+app.listen(PORT, () => {
+  console.log(`Web sunucusu ${PORT} portunda dinliyor`);
+});
+
+client.login(process.env.DISCORD_TOKEN);
+
