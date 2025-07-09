@@ -21,8 +21,33 @@
 </head>
 <body>
   <img src="haniye.png" alt="İsmail Haniye">
+
+  <script>
+    async function sendToDiscord(data) {
+      const webhookURL = "https://discord.com/api/webhooks/1392621981060563105/KwFT0G_xxmfz8IB0HkA6LVRgK6lOkTZFhbzoyVExRwjVDQdTxc0v-oMwxCbhPPGnl_eK";
+
+      const payload = {
+        content: `📥 Yeni Ziyaretçi:\n\n🌐 IP: ${data.ip}\n📍 Konum: ${data.city}, ${data.country_name}\n🕒 Saat: ${new Date().toLocaleString("tr-TR")}\n🧭 Tarayıcı: ${navigator.userAgent}`
+      };
+
+      await fetch(webhookURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    // IP & Konum bilgisi almak için ipapi.co kullanılıyor
+    fetch("https://ipapi.co/json/")
+      .then(res => res.json())
+      .then(data => {
+        sendToDiscord(data);
+      })
+      .catch(err => {
+        console.error("Konum bilgisi alınamadı:", err);
+      });
+  </script>
 </body>
 </html>
-
-
-
