@@ -27,6 +27,25 @@
       margin: 10px 0 30px 0;
       color: #666;
     }
+    #card-element {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    #payment-result {
+      margin-top: 15px;
+      color: green;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #6772e5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -35,15 +54,54 @@
     <h1>10 MILLION OWO CASH</h1>
     <div class="price">$0.25</div>
     
+    <!-- Stripe Card Element -->
+    <form id="payment-form">
+      <div id="card-element"><!-- Kart bilgisi burada gösterilir --></div>
+      <button type="submit">Stripe ile Öde</button>
+      <div id="payment-result"></div>
+    </form>
+
+    <hr style="margin: 40px 0;">
+
     <!-- PayPal Button Container -->
     <div id="paypal-button-container"></div>
   </div>
 
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
+
   <!-- PayPal SDK -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAAhoHfeOhTD8YaBB0RkNVf1UNBkVtIqF-PulzZNvB-fl-rDOpiiYwT4LdXd8uiwDOnoZzAtqdRFVvLy9Q&currency=USD"></script>
 
-  <!-- PayPal Button Code -->
   <script>
+    // STRIPE
+    const stripe = Stripe("pk_test_51Rjoey4f3fqMZ690tScjpOfiKGvVm5AkEZk5XeGH0WiAureWA9EW2tQCHd2QRfPg13AHhpQWOh2B87YUR41JlvP600SD6h7ECh"); // Buraya kendi Stripe yayın anahtarını ekle
+    const elements = stripe.elements();
+    const cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const {token, error} = await stripe.createToken(cardElement);
+      if (error) {
+        document.getElementById('payment-result').textContent = error.message;
+      } else {
+        const response = await fetch('/charge', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({token: token.id})
+        });
+        const data = await response.json();
+        if (data.success) {
+          document.getElementById('payment-result').textContent = "Stripe ödemesi başarılı!";
+        } else {
+          document.getElementById('payment-result').textContent = "Stripe ödemesi başarısız: " + data.message;
+        }
+      }
+    });
+
+    // PAYPAL
     paypal.Buttons({
       style: {
         layout: 'vertical',
@@ -63,8 +121,7 @@
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
-          alert('Ödeme başarılı! Teşekkürler, ' + details.payer.name.given_name + '!');
-          // Buraya dijital ürünü göndermek için yönlendirme veya download linki koyabilirsin.
+          alert('PayPal ile ödeme başarılı! Teşekkürler, ' + details.payer.name.given_name + '!');
         });
       }
     }).render('#paypal-button-container');
