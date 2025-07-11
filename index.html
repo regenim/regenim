@@ -1,20 +1,74 @@
-<script src="https://www.paypal.com/sdk/js?client-id=ATGtT2kVQE5zW49ZzWGRzaq4p0y8kwezf6N7O5CuxbJgfJbVtb9yI-Rkqcei-zJL-K7n-UCBzQX-2CsH&currency=USD"></script>
-<div id="paypal-button-container"></div>
-<script>
-  paypal.Buttons({
-    createOrder: function(data, actions) {
-      return actions.order.create({
-        purchase_units: [{
-          amount: {
-            value: '19.99' // ürün fiyatı
-          }
-        }]
-      }); 
-    },
-    onApprove: function(data, actions) {
-      return actions.order.capture().then(function(details) {
-        alert('Ödeme başarılı: ' + details.payer.name.given_name);
-      });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>10 MILLION OWO CASH</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
     }
-  }).render('#paypal-button-container');
-</script>
+    .container {
+      background: white;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+    h1 {
+      color: #333;
+    }
+    .price {
+      font-size: 24px;
+      margin: 10px 0 30px 0;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>10 MILLION OWO CASH</h1>
+    <div class="price">$10.00</div>
+    
+    <!-- PayPal Button Container -->
+    <div id="paypal-button-container"></div>
+  </div>
+
+  <!-- PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+
+  <!-- PayPal Button Code -->
+  <script>
+    paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color:  'blue',
+        shape:  'rect',
+        label:  'paypal'
+      },
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            description: "10 MILLION OWO CASH",
+            amount: {
+              value: '10.00'
+            }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Ödeme başarılı! Teşekkürler, ' + details.payer.name.given_name + '!');
+          // Buraya dijital ürünü göndermek için yönlendirme veya download linki koyabilirsin.
+        });
+      }
+    }).render('#paypal-button-container');
+  </script>
+
+</body>
+</html>
