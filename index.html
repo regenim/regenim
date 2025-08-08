@@ -1,62 +1,70 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Öykü ❤️ Zahid</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
-      background: url('hello-kitty.png') no-repeat center center fixed;
+      overflow: hidden;
+      background-image: url('hello-kitty.png');
       background-size: cover;
+      background-position: center;
       font-family: 'Comic Sans MS', cursive;
-      color: #ff1493;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      flex-direction: column;
-      text-align: center;
-      overflow: hidden;
       position: relative;
     }
-    h1 {
-      font-size: 4rem;
-      text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-      margin: 0;
-      z-index: 2;
-    }
-    button {
-      margin-top: 30px;
-      padding: 15px 40px;
-      font-size: 1.5rem;
+
+    #startButton {
+      padding: 20px 40px;
+      font-size: 24px;
       background-color: #ff69b4;
       border: none;
       border-radius: 12px;
       color: white;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: background-color 0.3s ease;
-      z-index: 2;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: 0.3s;
+      z-index: 10;
     }
-    button:hover {
+
+    #startButton:hover {
       background-color: #ff1493;
     }
-    .heart {
+
+    #mainText {
+      display: none;
       position: absolute;
-      font-size: 24px;
-      animation: floatUp 4s linear forwards;
-      user-select: none;
-      pointer-events: none;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      font-size: 48px;
+      color: #ff1493;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+      z-index: 5;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 32px;
+      animation: float 6s linear infinite;
       z-index: 1;
     }
-    @keyframes floatUp {
+
+    @keyframes float {
       0% {
-        transform: translateY(0) scale(1);
+        transform: translateY(100vh) scale(1);
+        opacity: 0;
+      }
+      50% {
         opacity: 1;
       }
       100% {
-        transform: translateY(-150vh) scale(1.5);
+        transform: translateY(-10vh) scale(1.5);
         opacity: 0;
       }
     }
@@ -64,54 +72,47 @@
 </head>
 <body>
 
-  <h1>Öykü ❤️ Zahid</h1>
+  <button id="startButton"> 💖</button>
+  <div id="mainText">Öykü ❤️ Zahid</div>
 
-  <button id="startBtn">
-    Müziği Başlat
-  </button>
-
-  <audio id="music" src="romantik-muzik.mp3" preload="auto"></audio>
+  <audio id="bgMusic" loop>
+    <source src="romantik-muzik.mp3" type="audio/mpeg">
+    Tarayıcınız ses öğesini desteklemiyor.
+  </audio>
 
   <script>
-    const btn = document.getElementById('startBtn');
-    const music = document.getElementById('music');
-    const body = document.body;
+    const button = document.getElementById('startButton');
+    const text = document.getElementById('mainText');
+    const music = document.getElementById('bgMusic');
 
-    btn.addEventListener('click', () => {
-      music.play();
-      btn.disabled = true;
-      btn.innerText = "Müzik Çalıyor 🎵";
+    const emojis = ["💖", "💘", "💕", "💞", "💓", "💗", "💝", "💟", "❤️", "🩷"];
 
-      // Her 300 ms'de kalp emoji oluştur
-      const interval = setInterval(() => {
-        createHeart();
-      }, 300);
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.classList.add("emoji");
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.fontSize = (24 + Math.random() * 24) + "px";
+      emoji.style.animationDuration = (3 + Math.random() * 5) + "s";
+      document.body.appendChild(emoji);
 
-      // 30 saniye sonra durdurabiliriz (isteğe bağlı)
-      setTimeout(() => clearInterval(interval), 30000);
-    });
-
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.innerText = "❤️";
-
-      // Ekranın genişliği içinde rastgele konum
-      heart.style.left = Math.random() * 100 + "vw";
-
-      // Farklı boyutlar için
-      heart.style.fontSize = (20 + Math.random() * 20) + "px";
-
-      // Animasyon süresi rastgele
-      heart.style.animationDuration = (3 + Math.random() * 3) + "s";
-
-      body.appendChild(heart);
-
-      // Animasyon bitince DOM'dan kaldır
-      heart.addEventListener('animationend', () => {
-        heart.remove();
-      });
+      setTimeout(() => {
+        emoji.remove();
+      }, 8000);
     }
+
+    button.addEventListener('click', () => {
+      button.style.display = 'none';
+      text.style.display = 'block';
+      music.play();
+
+      // Emojileri sürekli üret
+      setInterval(() => {
+        for (let i = 0; i < 4; i++) {
+          createEmoji();
+        }
+      }, 500);
+    });
   </script>
 
 </body>
