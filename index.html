@@ -1,130 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>10 MILLION OWO CASH</title>
+  <meta charset="UTF-8">
+  <title>Öykü ❤️ Zahid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background-color: #f2f2f2;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
+      margin: 0;
+      overflow: hidden;
+      background-image: url('hello-kitty.png');
+      background-size: cover;
+      background-position: center;
+      font-family: 'Comic Sans MS', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
     }
-    .container {
-      background: white;
-      padding: 30px;
-      max-width: 500px;
-      margin: auto;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      border-radius: 10px;
-    }
-    h1 {
-      color: #333;
-    }
-    .price {
+
+    #startButton {
+      padding: 20px 40px;
       font-size: 24px;
-      margin: 10px 0 30px 0;
-      color: #666;
-    }
-    #card-element {
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 15px;
-    }
-    #payment-result {
-      margin-top: 15px;
-      color: green;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #6772e5;
-      color: white;
+      background-color: #ff69b4;
       border: none;
-      border-radius: 4px;
+      border-radius: 12px;
+      color: white;
       cursor: pointer;
-      font-size: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: 0.3s;
+      z-index: 10;
+    }
+
+    #startButton:hover {
+      background-color: #ff1493;
+    }
+
+    #mainText {
+      display: none;
+      position: absolute;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      font-size: 48px;
+      color: #ff1493;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+      z-index: 5;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 32px;
+      animation: float 6s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.5);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>10 MILLION OWO CASH</h1>
-    <div class="price">$0.25</div>
-    
-    <!-- Stripe Card Element -->
-    <form id="payment-form">
-      <div id="card-element"><!-- Kart bilgisi burada gösterilir --></div>
-      <button type="submit">Stripe ile Öde</button>
-      <div id="payment-result"></div>
-    </form>
+  <button id="startButton">💖 Başlat 💖</button>
+  <div id="mainText">Öykü ❤️ Zahid</div>
 
-    <hr style="margin: 40px 0;">
-
-    <!-- PayPal Button Container -->
-    <div id="paypal-button-container"></div>
-  </div>
-
-  <!-- Stripe.js -->
-  <script src="https://js.stripe.com/v3/"></script>
-
-  <!-- PayPal SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAhoHfeOhTD8YaBB0RkNVf1UNBkVtIqF-PulzZNvB-fl-rDOpiiYwT4LdXd8uiwDOnoZzAtqdRFVvLy9Q&currency=USD"></script>
+  <audio id="bgMusic" loop>
+    <source src="romantik-muzik.mp3" type="audio/mpeg">
+    Tarayıcınız ses öğesini desteklemiyor.
+  </audio>
 
   <script>
-    // STRIPE
-    const stripe = Stripe("pk_test_51Rjoey4f3fqMZ690tScjpOfiKGvVm5AkEZk5XeGH0WiAureWA9EW2tQCHd2QRfPg13AHhpQWOh2B87YUR41JlvP600SD6h7ECh"); // Buraya kendi Stripe yayın anahtarını ekle
-    const elements = stripe.elements();
-    const cardElement = elements.create('card');
-    cardElement.mount('#card-element');
+    const button = document.getElementById('startButton');
+    const text = document.getElementById('mainText');
+    const music = document.getElementById('bgMusic');
 
-    const form = document.getElementById('payment-form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const {token, error} = await stripe.createToken(cardElement);
-      if (error) {
-        document.getElementById('payment-result').textContent = error.message;
-      } else {
-        const response = await fetch('/charge', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({token: token.id})
-        });
-        const data = await response.json();
-        if (data.success) {
-          document.getElementById('payment-result').textContent = "Stripe ödemesi başarılı!";
-        } else {
-          document.getElementById('payment-result').textContent = "Stripe ödemesi başarısız: " + data.message;
+    const emojis = ["💖", "💘", "💕", "💞", "💓", "💗", "💝", "💟", "❤️", "🩷"];
+
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.classList.add("emoji");
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.fontSize = (24 + Math.random() * 24) + "px";
+      emoji.style.animationDuration = (3 + Math.random() * 5) + "s";
+      document.body.appendChild(emoji);
+
+      setTimeout(() => {
+        emoji.remove();
+      }, 8000);
+    }
+
+    button.addEventListener('click', () => {
+      button.style.display = 'none';
+      text.style.display = 'block';
+      music.play();
+
+      // Emojileri hızla çoğalt
+      setInterval(() => {
+        for (let i = 0; i < 4; i++) {
+          createEmoji();
         }
-      }
+      }, 500);
     });
-
-    // PAYPAL
-    paypal.Buttons({
-      style: {
-        layout: 'vertical',
-        color:  'blue',
-        shape:  'rect',
-        label:  'paypal'
-      },
-      createOrder: function(data, actions) {
-        return actions.order.create({
-          purchase_units: [{
-            description: "10 MILLION OWO CASH",
-            amount: {
-              value: '0.25'
-            }
-          }]
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          alert('PayPal ile ödeme başarılı! Teşekkürler, ' + details.payer.name.given_name + '!');
-        });
-      }
-    }).render('#paypal-button-container');
   </script>
 
 </body>
