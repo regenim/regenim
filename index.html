@@ -3,415 +3,372 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Biz — Discord'ta Tanıştık</title>
+  <title>Biz — Discord'tan Çıkan Macera (Online Only)</title>
 
-  <!-- Google Font (internet bağlantısı varsa yüklenir) -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#0f1720;
-      --panel:#111827;
-      --accent:#5865f2; /* discord moru */
-      --muted:#9aa4b2;
-      --glass: rgba(255,255,255,0.04);
-      color-scheme: dark;
+      --bg-1: #0b1020;
+      --bg-2: #0f1728;
+      --accent: #7289da; /* discord purple-ish */
+      --accent2: #ff6b6b;
+      --muted: #a7b0c2;
+      --card: rgba(255,255,255,0.03);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      background: radial-gradient(1000px 600px at 10% 10%, rgba(88,101,242,0.08), transparent),
-                  linear-gradient(180deg,#071025 0%, #07102b 60%);
-      color: #e6eef8;
+      font-family:"Quicksand",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: radial-gradient(800px 400px at 10% 10%, rgba(114,137,218,0.08), transparent),
+                  linear-gradient(180deg,var(--bg-1), var(--bg-2));
+      color:#eaf0ff;
       -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      padding:32px;
+      padding:28px;
     }
 
-    .container{
-      max-width:1100px;
-      margin:0 auto;
-      display:grid;
-      grid-template-columns: 1fr 380px;
-      gap:28px;
-      align-items:start;
-    }
+    /* Layout */
+    .wrap{ max-width:1100px; margin:0 auto; display:grid; grid-template-columns: 1fr 360px; gap:24px; align-items:start; }
+    @media (max-width:980px){ .wrap{ grid-template-columns:1fr; padding:12px } }
 
-    /* LEFT - main column */
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:14px;
-      padding:20px;
-      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
-      border: 1px solid rgba(255,255,255,0.03);
+      border-radius:14px; padding:18px; border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
     }
 
-    header.hero{
-      display:flex;
-      gap:18px;
-      align-items:center;
-    }
-    .avatars{
-      width:120px;
-      height:120px;
-      border-radius:20px;
-      background:linear-gradient(135deg, rgba(88,101,242,0.18), rgba(255,90,120,0.08));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      overflow:visible;
-    }
+    /* Header / hero */
+    header.hero{ display:flex; gap:14px; align-items:center }
+    .avatar-stack{ width:110px; display:flex; gap:8px; align-items:center; justify-content:center; }
     .avatar{
-      width:72px;height:72px;border-radius:12px;
-      border:3px solid rgba(0,0,0,0.45);
-      background-size:cover;background-position:center;
-      box-shadow:0 6px 18px rgba(16,20,30,0.6);
+      width:74px; height:74px; border-radius:14px; background-size:cover; background-position:center;
+      border:3px solid rgba(0,0,0,0.45); box-shadow:0 8px 22px rgba(16,20,30,0.6);
     }
-    .avatar+a{ margin-left:8px }
-    .names{
-      flex:1;
-    }
-    .names h1{ margin:0;font-size:20px;letter-spacing:-0.2px}
-    .names p{ margin:6px 0 0;color:var(--muted); font-size:13px }
+    .hero-info h1{ margin:0; font-size:20px }
+    .hero-info p{ margin:6px 0 0 0; color:var(--muted); font-size:13px }
 
-    .meta-row{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-      align-items:center;
-      flex-wrap:wrap;
+    /* badges */
+    .badges{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap }
+    .badge{ background:var(--card); padding:8px 12px; border-radius:999px; color:var(--muted); font-size:13px; border:1px solid rgba(255,255,255,0.02) }
+
+    /* emoji rain */
+    .emoji-rain{ position:fixed; inset:0; pointer-events:none; z-index:5; overflow:hidden }
+    .emoji{
+      position:absolute; font-size:20px; will-change:transform, opacity; animation:fall linear infinite;
+      opacity:0.95; filter:drop-shadow(0 6px 14px rgba(0,0,0,0.45));
     }
-    .pill{
-      background:var(--glass);
-      padding:8px 12px;border-radius:999px;
-      font-size:13px;color:var(--muted);
-      display:inline-flex;gap:8px;align-items:center;
-      border:1px solid rgba(255,255,255,0.02);
+    @keyframes fall{
+      0%{ transform: translateY(-20vh) rotate(0deg) scale(0.8); opacity:0 }
+      10%{ opacity:1 }
+      100%{ transform: translateY(120vh) rotate(360deg) scale(1); opacity:0.9 }
     }
 
-    /* Counter */
-    .counter{
-      margin-top:16px;
-      display:flex;gap:12px;align-items:center;
-    }
-    .counter .big{
-      font-size:28px;font-weight:700;color:var(--accent);
-    }
-    .counter small{ color:var(--muted) }
+    /* left content */
+    .left .section{ margin-top:16px }
+    .timeline{ display:flex; flex-direction:column; gap:10px; margin-top:10px }
+    .evt{ display:flex; gap:12px; align-items:flex-start }
+    .dot{ width:12px;height:12px;border-radius:50%; background:linear-gradient(180deg,var(--accent),var(--accent2)); box-shadow:0 6px 16px rgba(114,137,218,0.18); margin-top:6px }
+    .evt .box{ background: rgba(255,255,255,0.02); padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.02) }
+    .evt time{ display:block; color:var(--muted); font-size:12px }
 
-    /* Timeline */
-    .timeline{
-      margin-top:18px;
-      display:grid;
-      gap:12px;
-    }
-    .event{
-      display:flex;gap:12px;align-items:flex-start;
-    }
-    .dot{
-      width:12px;height:12px;border-radius:50%;
-      background:linear-gradient(180deg,var(--accent), #ff6f91);
-      margin-top:6px;
-      box-shadow:0 4px 12px rgba(88,101,242,0.18);
-    }
-    .event .content{
-      background: rgba(255,255,255,0.02);
-      padding:10px 12px;border-radius:10px;
-      border:1px solid rgba(255,255,255,0.02);
-    }
-    .event .content time{ display:block;font-size:12px;color:var(--muted); margin-bottom:6px }
+    /* chat mock */
+    .chat-mock{ margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+    .bubble{ max-width:78%; padding:10px 12px; border-radius:12px; font-size:14px; line-height:1.2 }
+    .b-left{ align-self:flex-start; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); }
+    .b-right{ align-self:flex-end; background:linear-gradient(180deg, rgba(114,137,218,0.18), rgba(255,90,120,0.06)); border:1px solid rgba(114,137,218,0.12); color:#07102b; }
 
-    /* Right column */
-    aside{
-      position:sticky; top:32px;
-    }
-    .panel{
-      padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.02);
-    }
-    .gallery{
-      display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px;
-    }
-    .thumb{
-      width:100%;aspect-ratio:1.4/1;border-radius:8px;background-size:cover;background-position:center;
-      cursor:pointer;transition:transform .15s ease;
-    }
-    .thumb:hover{ transform:translateY(-6px) }
+    /* right column */
+    aside{ position:sticky; top:28px; height:fit-content }
+    .panel h3{ margin:0 0 8px 0 }
+    .activity{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.02); display:flex;flex-direction:column; gap:8px }
+    .act-line{ display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:14px }
+    .act-user{ display:flex; gap:8px; align-items:center }
+    .act-avatar{ width:36px;height:36px;border-radius:8px; background-size:cover; background-position:center; border:2px solid rgba(0,0,0,0.4) }
 
-    /* audio controls */
-    .song-row{ display:flex;gap:10px;align-items:center;margin-top:12px }
-    .play-btn{
-      padding:10px 12px;border-radius:10px;background:var(--accent);color:white;font-weight:600;border:none;
-      cursor:pointer;box-shadow:0 8px 30px rgba(88,101,242,0.18);
-    }
+    /* gallery */
+    .gallery{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:10px }
+    .thumb{ background-size:cover; background-position:center; border-radius:10px; padding-top:62%; position:relative; cursor:pointer; overflow:hidden; border:1px solid rgba(255,255,255,0.02) }
+    .thumb:after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent, rgba(0,0,0,0.15)); opacity:0.6 }
 
     /* modal */
-    .modal{
-      position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:60;
-    }
+    .modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(2,6,23,0.7); z-index:60 }
     .modal.open{ display:flex }
-    .modal .modal-card{ width:min(900px,95%); background:#0b1220;border-radius:12px;padding:16px; }
-    .modal img{ width:100%; height:auto; border-radius:8px; display:block }
+    .modal-card{ width:min(900px,95%); background:#07102b; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.03) }
+    .modal-card img, .modal-card video{ width:100%; height:auto; border-radius:8px; display:block }
 
-    footer{ margin-top:20px; text-align:center; color:var(--muted); font-size:13px }
-
-    /* responsive */
-    @media (max-width:980px){
-      .container{ grid-template-columns:1fr; padding-bottom:50px }
-      aside{ position:static }
-    }
+    /* footer */
+    footer{ text-align:center; margin-top:18px; color:var(--muted); font-size:13px }
   </style>
 </head>
 <body>
-  <div class="container">
-    <main class="card" aria-labelledby="title">
+  <!-- Emoji rain (randomized via JS) -->
+  <div class="emoji-rain" id="emojiRain" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <main class="card left" aria-labelledby="siteTitle">
       <header class="hero">
-        <div class="avatars" aria-hidden="true">
-          <!-- Replace background-image urls with your avatar images -->
-          <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop&s=...');"></div>
-          <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop&s=...'); margin-left:10px; transform: translateX(-8px);"></div>
+        <div class="avatar-stack" aria-hidden="true">
+          <!-- --- DEĞİŞTİR: avatar URL'lerinizi girin --- -->
+          <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1545996124-6c6b6d1b3f13?q=80&w=800&auto=format&fit=crop&s=...');"></div>
+          <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop&s=...'); transform:translateX(-12px);"></div>
         </div>
 
-        <div class="names">
-          <h1 id="title">Ayşe ❤️ Emre</h1>
-          <p>Discord'da tanıştılar • İlk mesaj: 2023-02-12 • Şaka: Emre hep geç kalır</p>
+        <div class="hero-info">
+          <h1 id="siteTitle">Ayşe + Emre — Online Maceralar</h1>
+          <p>Hiç buluşmadık, ama birlikte binlerce ping attık. 😂🎮</p>
 
-          <div class="meta-row" role="list">
-            <div class="pill" role="listitem">💬 Tanışma: Discord Lobby</div>
-            <div class="pill" role="listitem">🎮 Favori oyun: Among Us</div>
-            <div class="pill" role="listitem" id="currentActivity">🔴 Durum: Çevrimiçi değil</div>
-          </div>
-
-          <div class="counter" aria-live="polite">
-            <div>
-              <div class="big" id="daysTogether">0</div>
-              <small>gün beraber</small>
-            </div>
-            <div style="margin-left:auto;text-align:right">
-              <small style="color:var(--muted)">İlk tanışma: <strong id="meetDate">12 Şubat 2023</strong></small><br>
-              <small style="color:var(--muted)">Güncelleme: otomatik</small>
-            </div>
+          <div class="badges" role="list">
+            <div class="badge">🕹️ Oyun partnerleri</div>
+            <div class="badge">💬 24/7 DM</div>
+            <div class="badge" id="daysTogetherBadge">⏱️ 0 gün (beraber)</div>
           </div>
         </div>
       </header>
 
-      <section class="timeline" aria-label="Önemli Anlar">
-        <div class="event">
-          <div class="dot" aria-hidden="true"></div>
-          <div class="content">
-            <time>12 Şubat 2023</time>
-            <strong>İlk mesaj</strong>
-            <div style="margin-top:6px;color:var(--muted)">Şans eseri aynı lobiye düştük, "gf?" diye sormuştum, işte o an her şey başladı.</div>
+      <section class="section" aria-labelledby="timelineTitle">
+        <h2 id="timelineTitle" style="margin:12px 0 8px 0">Komik Zaman Çizelgesi</h2>
+        <div class="timeline" role="list">
+          <div class="evt" role="listitem">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="box">
+              <time>2023-02-12</time>
+              <strong>İlk mesaj</strong>
+              <div style="color:var(--muted); margin-top:6px">"gf?" diye yazdım. Cevap: "lol no" — ama DM açtı. 🤝</div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="box">
+              <time>2023-04-05</time>
+              <strong>İlk oyun içi kavga</strong>
+              <div style="color:var(--muted); margin-top:6px">Beraber Among Us oynarken birbirimizi reportladık — hala konuşuyoruz ama kırgınlık var mı, yok mu?</div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="dot"></div>
+            <div class="box">
+              <time>2023-10-31</time>
+              <strong>Halloween etkinliği</strong>
+              <div style="color:var(--muted); margin-top:6px">Beraber kostüm seçip, sunucuda 3 saat tüyler ürperttik. Korkmadık, çok güldük.</div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="event">
-          <div class="dot" aria-hidden="true"></div>
-          <div class="content">
-            <time>18 Mart 2023</time>
-            <strong>İlk sesli görüşme</strong>
-            <div style="margin-top:6px;color:var(--muted)">3 saatlik sohbet — ikimiz de uyku problemleri yaşadık sanırım 🥱</div>
+      <section class="section" aria-labelledby="chatTitle">
+        <h2 id="chatTitle" style="margin:14px 0 8px 0">Favori DM'lerden (kopyalama yok, mizah amaçlı)</h2>
+        <div class="chat-mock" role="list">
+          <div class="bubble b-left" role="listitem">
+            <strong>Ayşe:</strong> Emre, bugün 0/12 oldun ya 😂
+            <div style="font-size:12px;color:var(--muted);margin-top:6px">02:14</div>
+          </div>
+
+          <div class="bubble b-right" role="listitem">
+            <strong>Emre:</strong> O maçta rakip varmış... sonraki maçta intikam alacağım!
+            <div style="font-size:12px;color:#0b1220;margin-top:6px">02:15</div>
+          </div>
+
+          <div class="bubble b-left" role="listitem">
+            <strong>Ayşe:</strong> Sana spawn gift attım, ama sihirli değildi.
+            <div style="font-size:12px;color:var(--muted);margin-top:6px">03:02</div>
           </div>
         </div>
+      </section>
 
-        <div class="event">
-          <div class="dot" aria-hidden="true"></div>
-          <div class="content">
-            <time>01 Mayıs 2023</time>
-            <strong>İlk buluşma</strong>
-            <div style="margin-top:6px;color:var(--muted)">Parkta buluşup oyun oynadık — telefonlar ikinci plandaydı.</div>
-          </div>
+      <section class="section" aria-labelledby="memeTitle">
+        <h2 id="memeTitle" style="margin:14px 0 8px 0">Memeler & GIF'ler</h2>
+        <div class="gallery" id="gallery">
+          <!-- --- DEĞİŞTİR: data-full ile kendi gif/meme URL'lerini koy --- -->
+          <div class="thumb" tabindex="0" role="button" aria-label="meme1"
+               style="background-image:url('https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif');"
+               data-full="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"></div>
+
+          <div class="thumb" tabindex="0" role="button" aria-label="meme2"
+               style="background-image:url('https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif');"
+               data-full="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"></div>
+
+          <div class="thumb" tabindex="0" role="button" aria-label="meme3"
+               style="background-image:url('https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif');"
+               data-full="https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif"></div>
+
+          <div class="thumb" tabindex="0" role="button" aria-label="meme4"
+               style="background-image:url('https://media.giphy.com/media/13HgwGsXF0aiGY/giphy.gif');"
+               data-full="https://media.giphy.com/media/13HgwGsXF0aiGY/giphy.gif"></div>
         </div>
-
       </section>
 
       <footer>
-        <small>Bu bir örnek site. Geliştirmek istersen özelleştirebilirim — tema, fontlar, veya özel domain gibi.</small>
+        <small style="color:var(--muted)">İstersen bu sayfayı kişiselleştiririm: avatarlar, timeline ve DM'leri gerçek içeriğe göre düzenleyebiliriz.</small>
       </footer>
     </main>
 
     <aside>
-      <div class="panel card" aria-labelledby="galleryTitle">
-        <h3 id="galleryTitle" style="margin:0 0 8px 0">Galeri</h3>
-
-        <div class="gallery" id="gallery">
-          <!-- Thumbnails: Replace background-image with your own photo URLs -->
-          <div class="thumb" tabindex="0" role="button" aria-label="Fotoğraf 1"
-               style="background-image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop&s=...')"
-               data-full="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1200&auto=format&fit=crop&s=..."></div>
-
-          <div class="thumb" tabindex="0" role="button" aria-label="Fotoğraf 2"
-               style="background-image:url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop&s=...')"
-               data-full="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200&auto=format&fit=crop&s=..."></div>
-
-          <div class="thumb" tabindex="0" role="button" aria-label="Fotoğraf 3"
-               style="background-image:url('https://images.unsplash.com/photo-1524503033411-c9566986fc8f?q=80&w=800&auto=format&fit=crop&s=...')"
-               data-full="https://images.unsplash.com/photo-1524503033411-c9566986fc8f?q=80&w=1200&auto=format&fit=crop&s=..."></div>
-
-          <div class="thumb" tabindex="0" role="button" aria-label="Fotoğraf 4"
-               style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop&s=...')"
-               data-full="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1200&auto=format&fit=crop&s=..."></div>
+      <div class="card panel" aria-labelledby="rightTitle">
+        <h3 id="rightTitle">Canlı (komik) Durum</h3>
+        <div class="activity" id="activityBox" aria-live="polite">
+          <!-- lines injected by JS -->
         </div>
 
-        <div class="song-row">
-          <button class="play-btn" id="playBtn" aria-pressed="false">▶ Çal — Bizim Şarkı</button>
-          <div style="font-size:13px;color:var(--muted)">Ses: otomatik kapalı, butona basınca çalar</div>
-        </div>
-
-        <div style="margin-top:12px;color:var(--muted);font-size:13px">
-          <strong>Discord Nickleri</strong>
-          <div>Ayşe#1234</div>
-          <div>Emre#9876</div>
-        </div>
-      </div>
-
-      <div class="panel card" style="margin-top:18px">
-        <h3 style="margin:0 0 8px 0">Mini Oyun Köşesi</h3>
-        <p style="color:var(--muted);margin:0 0 12px 0">Kısa bir anket: Hangimiz Valorant'ta daha iyiyiz?</p>
-        <form id="funForm">
-          <label style="display:block;margin-bottom:8px"><input type="radio" name="who" value="ayse" checked> Ayşe</label>
-          <label style="display:block;margin-bottom:8px"><input type="radio" name="who" value="emre"> Emre</label>
-          <label style="display:block;margin-bottom:8px"><input type="radio" name="who" value="beraber"> Beraber</label>
-          <button type="submit" class="play-btn" style="margin-top:12px">Oyla</button>
-          <div id="funResult" style="margin-top:10px;color:var(--muted)"></div>
+        <h3 style="margin-top:12px">Mini Anket</h3>
+        <div style="color:var(--muted); font-size:14px; margin-top:6px">Hangimiz daha çok trash talk yapıyor?</div>
+        <form id="pollForm" style="margin-top:8px">
+          <label style="display:block; margin-bottom:6px"><input type="radio" name="who" value="ayse" checked> Ayşe</label>
+          <label style="display:block; margin-bottom:6px"><input type="radio" name="who" value="emre"> Emre</label>
+          <label style="display:block; margin-bottom:6px"><input type="radio" name="who" value="beraber"> Beraber</label>
+          <button type="submit" style="margin-top:10px; padding:8px 12px; border-radius:10px; border:none; background:var(--accent); color:white; cursor:pointer">Oyla</button>
         </form>
+        <div id="pollResult" style="margin-top:8px; color:var(--muted)"></div>
       </div>
     </aside>
   </div>
 
-  <!-- Modal for gallery -->
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <!-- Modal for GIFs/memes -->
+  <div class="modal" id="modal" aria-hidden="true" role="dialog">
     <div class="modal-card" role="document">
-      <button id="closeModal" style="float:right;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer">✕</button>
-      <img id="modalImg" src="" alt="Fotoğraf büyük gösterim">
-      <div style="margin-top:8px;color:var(--muted);font-size:13px">Fotoğraf</div>
+      <button id="modalClose" style="float:right;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer">✕</button>
+      <div id="modalContent" style="margin-top:8px"></div>
     </div>
   </div>
 
-  <!-- Hidden audio element (replace src with your song URL or relative path) -->
-  <audio id="song" preload="none" src=""></audio>
-
   <script>
     // ---------- Config ----------
-    const meetDateStr = '2023-02-12'; // YYYY-MM-DD format for counter
+    const meetDateStr = '2023-02-12'; // ilk tanışma tarihi
     const meetDate = new Date(meetDateStr + 'T00:00:00');
 
-    // ------------- Counter -------------
-    function calcDaysTogether() {
+    // ---------- Counter ----------
+    function calcDaysTogether(){
       const now = new Date();
-      // compute difference in UTC days to avoid timezone subtle errors
       const utcNow = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
       const utcMeet = Date.UTC(meetDate.getFullYear(), meetDate.getMonth(), meetDate.getDate());
       const diffDays = Math.floor((utcNow - utcMeet) / (1000*60*60*24));
       return diffDays >= 0 ? diffDays : 0;
     }
-    function updateCounter(){
-      document.getElementById('daysTogether').textContent = calcDaysTogether();
-      // show readable date in Turkish
-      const meetDateLabel = new Date(meetDate);
-      const opts = { year:'numeric', month:'long', day:'numeric' };
-      document.getElementById('meetDate').textContent = meetDateLabel.toLocaleDateString('tr-TR', opts);
+    function updateDaysBadge(){
+      const el = document.getElementById('daysTogetherBadge');
+      el.textContent = `⏱️ ${calcDaysTogether()} gün (beraber)`;
     }
-    updateCounter();
+    updateDaysBadge();
 
-    // ------------- Gallery modal -------------
+    // ---------- Emoji rain generator ----------
+    const emojis = ['💖','😂','🎮','🎧','🔥','🍕','🍩','🤡','😭','👀','✨','😹'];
+    const rainContainer = document.getElementById('emojiRain');
+    function spawnEmojis(count=18){
+      const w = window.innerWidth;
+      for(let i=0;i<count;i++){
+        const span = document.createElement('div');
+        span.className = 'emoji';
+        span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        const left = Math.random()*100;
+        const delay = Math.random()*-12;
+        const dur = 6 + Math.random()*6;
+        const size = 14 + Math.random()*22;
+        span.style.left = left + 'vw';
+        span.style.fontSize = size + 'px';
+        span.style.animationDuration = dur + 's';
+        span.style.animationDelay = delay + 's';
+        rainContainer.appendChild(span);
+        // remove after animation
+        setTimeout(()=>span.remove(), (dur+Math.abs(delay))*1000 + 2000);
+      }
+    }
+    // spawn periodically
+    spawnEmojis(22);
+    setInterval(()=>spawnEmojis(12), 7000);
+
+    // ---------- Fake "Discord Activity" box ----------
+    const fakeActivities = [
+      {user:'Ayşe', avatar:'https://images.unsplash.com/photo-1545996124-6c6b6d1b3f13?q=80&w=800&auto=format&fit=crop&s=...', text:'🎧 Spotify: Lo-fi (kafayı bozuyorum)'},
+      {user:'Emre', avatar:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop&s=...', text:'🎮 Valorant: 0/12 - Hakem nerede?'},
+      {user:'Ayşe', avatar:'https://images.unsplash.com/photo-1545996124-6c6b6d1b3f13?q=80&w=800&auto=format&fit=crop&s=...', text:'📝 Yeni meme hazırlıyor...'},
+      {user:'Emre', avatar:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop&s=...', text:'🍕 Pizza siparişi verildi (paylaşılmayacak)'},
+      {user:'Ayşe', avatar:'https://images.unsplash.com/photo-1545996124-6c6b6d1b3f13?q=80&w=800&auto=format&fit=crop&s=...', text:'🏆 Ranked grind (ayrıcalık istiyorum)'}
+    ];
+    const activityBox = document.getElementById('activityBox');
+    function renderActivity(i=0){
+      activityBox.innerHTML = '';
+      for(let j=0;j<3;j++){
+        const idx = (i+j) % fakeActivities.length;
+        const act = fakeActivities[idx];
+        const line = document.createElement('div');
+        line.className = 'act-line';
+        line.innerHTML = `
+          <div class="act-user">
+            <div class="act-avatar" style="background-image:url('${act.avatar}')"></div>
+            <div>
+              <div style="font-weight:600">${act.user}</div>
+              <div style="font-size:12px;color:${'var(--muted)'}">${act.text}</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--muted)">● online</div>
+        `;
+        activityBox.appendChild(line);
+      }
+    }
+    let actIndex = 0;
+    renderActivity(actIndex);
+    setInterval(()=>{ actIndex = (actIndex+1) % fakeActivities.length; renderActivity(actIndex); }, 3500);
+
+    // ---------- Gallery modal ----------
     const thumbs = document.querySelectorAll('.thumb');
     const modal = document.getElementById('modal');
-    const modalImg = document.getElementById('modalImg');
-    const closeModal = document.getElementById('closeModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalClose = document.getElementById('modalClose');
 
     thumbs.forEach(t => {
       t.addEventListener('click', () => openModal(t.dataset.full));
-      t.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(t.dataset.full); }});
+      t.addEventListener('keydown', (e) => { if(e.key==='Enter' || e.key===' ') openModal(t.dataset.full); });
     });
+
     function openModal(src){
       if(!src) return;
-      modalImg.src = src;
+      modalContent.innerHTML = '';
+      // if it's a gif, show as image; if a video URL ends with mp4 show video tag
+      if(src.match(/\.mp4|\.webm|\.ogg$/)){
+        const v = document.createElement('video');
+        v.src = src;
+        v.controls = true;
+        v.autoplay = true;
+        modalContent.appendChild(v);
+      }else{
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = 'GIF / Meme';
+        modalContent.appendChild(img);
+      }
       modal.classList.add('open');
       modal.setAttribute('aria-hidden','false');
-      closeModal.focus();
-    }
-    closeModal.addEventListener('click', close);
-    modal.addEventListener('click', (e) => { if(e.target === modal) close(); });
-    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') close(); });
-    function close(){
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden','true');
-      modalImg.src = '';
+      modalClose.focus();
     }
 
-    // ------------- Audio play -------------
-    const playBtn = document.getElementById('playBtn');
-    const audio = document.getElementById('song');
-    // TODO: replace with your audio file or remote URL (mp3/ogg). If left empty, button will show hint.
-    audio.src = ''; // e.g. 'audio/our-song.mp3' or 'https://example.com/song.mp3'
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); modalContent.innerHTML = ''; }
 
-    playBtn.addEventListener('click', async () => {
-      if(!audio.src){
-        alert('Şarkı dosyası ayarlanmamış. HTML içindeki audio.src satırını kendi mp3/ogg URL\'nizle değiştirin.');
-        return;
-      }
-      if(audio.paused){
-        try{
-          await audio.play();
-          playBtn.textContent = '⏸ Durdur';
-          playBtn.setAttribute('aria-pressed','true');
-        }catch(err){
-          console.warn('Çalma hatası:', err);
-          alert('Tarayıcı otomatik çalmaya izin vermedi. Lütfen sayfada bir etkileşim yapın (butona basın).');
-        }
-      }else{
-        audio.pause();
-        playBtn.textContent = '▶ Çal — Bizim Şarkı';
-        playBtn.setAttribute('aria-pressed','false');
-      }
-    });
-
-    audio.addEventListener('ended', () => {
-      playBtn.textContent = '▶ Çal — Bizim Şarkı';
-      playBtn.setAttribute('aria-pressed','false');
-    });
-
-    // ------------- Fun form -------------
-    document.getElementById('funForm').addEventListener('submit', (e) => {
+    // ---------- Poll ----------
+    document.getElementById('pollForm').addEventListener('submit', (e)=>{
       e.preventDefault();
       const choice = document.querySelector('input[name="who"]:checked').value;
-      const result = document.getElementById('funResult');
-      if(choice === 'ayse') result.textContent = 'Ayşe galip! Tebrikler 🎉';
-      else if(choice === 'emre') result.textContent = 'Emre galip! Vay be 👏';
-      else result.textContent = 'Beraber kazanıyorsunuz, aşk zaferi 🥰';
+      const res = document.getElementById('pollResult');
+      if(choice==='ayse') res.textContent = 'Ayşe — trash talk queen 👑';
+      else if(choice==='emre') res.textContent = 'Emre — kalbimiz kırık ama ego tam 😅';
+      else res.textContent = 'Beraber — eşit dağılım: 50/50 kaos 🤝';
     });
 
-    // ------------- Simüle Basit "Discord Activity" -------------
-    // Gerçek Rich Presence için back-end / Discord entegrasyonu gerekir.
-    // Burada demo amaçlı rastgele durum değiştiren bir simülasyon var.
-    const activities = [
-      '🎧 Spotify: Lo-fi Beats',
-      '🎮 Among Us lobi',
-      '📚 Ders çalışıyor',
-      '🍳 Mutfakta',
-      '💤 Çevrimdışı'
-    ];
-    function cycleActivity(){
-      const idx = Math.floor(Math.random()*activities.length);
-      const el = document.getElementById('currentActivity');
-      el.textContent = activities[idx];
-    }
-    cycleActivity();
-    setInterval(cycleActivity, 12000);
-
-    // Accessibility: ensure focus trap for modal when open (simple)
-    modal.addEventListener('keydown', (e) => {
-      if(e.key === 'Tab'){
-        e.preventDefault();
-        closeModal.focus();
-      }
+    // Accessibility: focus trap for modal (basic)
+    modal.addEventListener('keydown', (e)=>{
+      if(e.key === 'Tab'){ e.preventDefault(); modalClose.focus(); }
     });
 
-    // end of script
+    // Small nicety: update days badge daily at midnight
+    setInterval(() => {
+      updateDaysBadge();
+    }, 1000*60*30); // check every 30 minutes
+
   </script>
 </body>
 </html>
