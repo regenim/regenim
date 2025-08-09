@@ -1,76 +1,317 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Discord Aktivitem</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Discord Profil Kartı — Canlı</title>
   <style>
-    body {
-      background: #2c2f33;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 50px;
+    :root{
+      --bg:#0b1020; --card:#0f1724; --muted:#9aa4b2;
+      --online:#43b581; --idle:#faa61a; --dnd:#f04747; --offline:#747f8d;
+      --accent:#7289da;
     }
-    .card {
-      background: #23272a;
-      border-radius: 10px;
-      padding: 20px;
-      width: 300px;
-      margin: auto;
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+      font-family:Inter, Poppins, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#07102b 0%, #081426 60%);
+      color:#eaf0ff; padding:24px;
     }
-    img {
-      border-radius: 10px;
-      max-width: 100%;
+    .card{
+      width:360px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03); border-radius:14px; padding:16px; box-shadow:0 12px 40px rgba(2,6,23,0.7);
     }
+    .top{
+      display:flex; gap:12px; align-items:center;
+    }
+    .avatar{
+      width:76px; height:76px; border-radius:14px; background:#111; background-size:cover; background-position:center;
+      border:3px solid rgba(0,0,0,0.45);
+    }
+    .info h2{ margin:0; font-size:18px; display:flex; gap:8px; align-items:center; }
+    .username { font-weight:700; letter-spacing:-0.2px }
+    .discr { font-weight:500; color:var(--muted); font-size:13px }
+    .status-row{ margin-top:6px; display:flex; gap:8px; align-items:center; }
+    .presence-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; box-shadow:0 6px 18px rgba(0,0,0,0.45) }
+    .custom-status{ margin-top:10px; padding:10px; background:rgba(255,255,255,0.02); border-radius:10px; font-size:13px; color:var(--muted) }
+    .activities{ margin-top:12px; display:flex; flex-direction:column; gap:10px }
+    .act{ background: rgba(255,255,255,0.02); padding:10px; border-radius:10px; display:flex; gap:10px; align-items:center; border:1px solid rgba(255,255,255,0.02) }
+    .act .act-icon{ width:48px; height:48px; border-radius:8px; background:#0b1220; background-size:cover; background-position:center; }
+    .act .act-body{ flex:1 }
+    .act .name{ font-weight:600; font-size:14px }
+    .act .meta{ color:var(--muted); font-size:13px; margin-top:4px }
+    .spotify{ display:flex; gap:10px; align-items:center }
+    .spotify img{ width:64px; height:64px; border-radius:8px; object-fit:cover; }
+    .progress{ height:6px; background:rgba(255,255,255,0.03); border-radius:6px; margin-top:8px; overflow:hidden }
+    .progress > i{ display:block; height:100%; background:linear-gradient(90deg,var(--accent), #ff7bc1); width:0% }
+    .small{ color:var(--muted); font-size:12px; margin-top:8px; text-align:right }
+    footer{ margin-top:10px; color:var(--muted); font-size:12px; text-align:center }
+    .placeholder{ color:var(--muted); font-size:13px; padding:10px; background:rgba(255,255,255,0.01); border-radius:10px; text-align:center }
   </style>
 </head>
 <body>
+  <div class="card" id="card">
+    <div class="top">
+      <div class="avatar" id="avatar" aria-hidden="true"></div>
+      <div class="info">
+        <h2><span class="username" id="username">Yükleniyor...</span><span class="discr" id="discr"></span></h2>
+        <div class="status-row">
+          <span class="presence-dot" id="presenceDot" style="background:var(--offline)"></span>
+          <div id="presenceText" style="color:var(--muted); font-size:13px">Durum: Bilinmiyor</div>
+        </div>
+      </div>
+    </div>
 
-  <div class="card">
-    <h2>Şu anki Aktivitem</h2>
-    <p id="status">Yükleniyor...</p>
-    <img id="cover" style="display:none;">
+    <div id="customStatus" class="custom-status" style="display:none"></div>
+
+    <div class="activities" id="activities">
+      <div class="placeholder" id="noActivity">Hiç aktif bir etkinlik görünmüyor.</div>
+    </div>
+
+    <div class="small" id="lastUpdated">Son güncelleme: —</div>
+    <footer>Veri: Lanyard (WebSocket) • Canlı güncelleme</footer>
   </div>
 
   <script>
-    const userId = "461158648526143490"; // Discord ID'ni buraya yaz
-    const ws = new WebSocket(`wss://api.lanyard.rest/socket`);
+    // ====== AYAR: buraya kendi Discord user ID'nizi koyun ======
+    const DISCORD_USER_ID = "461158648526143490"; // <-- değiştir
 
-    ws.onopen = () => {
-      ws.send(JSON.stringify({
-        op: 2,
-        d: { subscribe_to_id: userId }
-      }));
-    };
+    // Lanyard websocket
+    const socket = new WebSocket("wss://api.lanyard.rest/socket");
+    let heartbeatInterval = null;
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.t === "INIT_STATE" || data.t === "PRESENCE_UPDATE") {
-        const presence = data.d;
-        let statusText = "Şu anda boşta...";
-        let coverImg = document.getElementById("cover");
+    // element refs
+    const avatarEl = document.getElementById('avatar');
+    const usernameEl = document.getElementById('username');
+    const discrEl = document.getElementById('discr');
+    const presenceDot = document.getElementById('presenceDot');
+    const presenceText = document.getElementById('presenceText');
+    const customStatusEl = document.getElementById('customStatus');
+    const activitiesEl = document.getElementById('activities');
+    const noActivityEl = document.getElementById('noActivity');
+    const lastUpdatedEl = document.getElementById('lastUpdated');
 
-        if (presence.listening_to_spotify) {
-          const song = presence.spotify.song;
-          const artist = presence.spotify.artist;
-          const albumArt = presence.spotify.album_art_url;
-          statusText = `🎵 ${artist} - ${song}`;
-          coverImg.src = albumArt;
-          coverImg.style.display = "block";
-        } else if (presence.activities && presence.activities.length > 0) {
-          const game = presence.activities.find(a => a.type === 0); // 0 = oynanan oyun
-          if (game) {
-            statusText = `🎮 ${game.name}`;
-            coverImg.style.display = "none";
-          }
-        } else {
-          coverImg.style.display = "none";
-        }
+    function setPresenceDot(status){
+      // online, idle, dnd, offline
+      if(status === 'online') presenceDot.style.background = 'var(--online)';
+      else if(status === 'idle') presenceDot.style.background = 'var(--idle)';
+      else if(status === 'dnd') presenceDot.style.background = 'var(--dnd)';
+      else presenceDot.style.background = 'var(--offline)';
+    }
 
-        document.getElementById("status").innerText = statusText;
+    // Construct avatar URL (discord CDN)
+    function avatarUrl(id, avatarHash){
+      if(!avatarHash){
+        // default avatar (discriminator modulo 5)
+        return `https://cdn.discordapp.com/embed/avatars/0.png`;
       }
-    };
-  </script>
+      // if animated avatar prefix 'a_' you could use gif
+      const ext = avatarHash.startsWith('a_') ? 'gif' : 'png';
+      return `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.${ext}?size=512`;
+    }
 
+    // Pretty format ms -> mm:ss
+    function msToMMSS(ms){
+      if(!ms && ms !== 0) return '0:00';
+      const s = Math.floor(ms/1000);
+      const m = Math.floor(s/60);
+      const sec = s % 60;
+      return `${m}:${sec.toString().padStart(2,'0')}`;
+    }
+
+    // Render presence object from Lanyard
+    function renderPresence(presence){
+      // presence is an object as returned by Lanyard (data.d)
+      // Example keys: discord_user, discord_status, activities[], listening_to_spotify, spotify{...}, kv...
+      const discordUser = presence.discord_user || {};
+      const discordId = discordUser.id || DISCORD_USER_ID;
+
+      // username + discriminator
+      usernameEl.textContent = discordUser.username || 'Bilinmiyor';
+      if(discordUser.discriminator) discrEl.textContent = `#${discordUser.discriminator}`;
+      else discrEl.textContent = '';
+
+      // avatar
+      avatarEl.style.backgroundImage = `url('${avatarUrl(discordId, discordUser.avatar)}')`;
+
+      // presence status
+      const status = presence.discord_status || 'offline';
+      setPresenceDot(status);
+      presenceText.textContent = `Durum: ${status}`;
+
+      // custom status: an activity where type === 4 or name === 'Custom Status'
+      const custom = (presence.activities || []).find(a => a.type === 4 || (a.name && a.name.toLowerCase().includes('custom')));
+      if(custom && (custom.state || custom.emoji)){
+        let cs = '';
+        if(custom.emoji){
+          // emoji may be like {name:'💖'} or custom emoji object
+          cs += (custom.emoji.name ? custom.emoji.name + ' ' : '');
+        }
+        if(custom.state) cs += custom.state;
+        customStatusEl.style.display = 'block';
+        customStatusEl.textContent = cs;
+      } else {
+        customStatusEl.style.display = 'none';
+      }
+
+      // activities area: prefer spotify first, then other activities
+      activitiesEl.querySelectorAll('.act').forEach(n => n.remove());
+      let hasAny = false;
+
+      // Spotify handling
+      if(presence.listening_to_spotify && presence.spotify){
+        hasAny = true;
+        const s = presence.spotify;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'act spotify';
+        wrapper.innerHTML = `
+          <img id="spArt" src="${s.album_art_url}" alt="Spotify album">
+          <div style="flex:1">
+            <div style="font-weight:700">${escapeHtml(s.song || '—')}</div>
+            <div style="color:var(--muted); font-size:13px; margin-top:4px">${escapeHtml(s.artist || '')}</div>
+            <div class="progress"><i id="spProgress" style="width:0%"></i></div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:6px">
+              <span id="spElapsed">0:00</span><span id="spRemaining">-</span>
+            </div>
+          </div>
+        `;
+        activitiesEl.prepend(wrapper);
+
+        // progress update function using timestamps if available
+        function updateSpotifyProgress(){
+          const now = Date.now();
+          const start = s.timestamps?.start ?? null;
+          const end = s.timestamps?.end ?? null;
+          const elapsedEl = wrapper.querySelector('#spElapsed');
+          const remEl = wrapper.querySelector('#spRemaining');
+          const bar = wrapper.querySelector('#spProgress');
+
+          if(start && end){
+            const total = end - start;
+            const elapsed = Math.max(0, Math.min(total, now - start));
+            const pct = Math.round((elapsed / total) * 100);
+            bar.style.width = pct + '%';
+            elapsedEl.textContent = msToMMSS(elapsed);
+            const remain = total - elapsed;
+            remEl.textContent = `-${msToMMSS(remain)}`;
+          } else {
+            bar.style.width = '0%';
+            elapsedEl.textContent = '0:00';
+            remEl.textContent = '-';
+          }
+        }
+        updateSpotifyProgress();
+        // update every second if spotify timestamps available
+        const spInterval = setInterval(()=> {
+          if(!document.body.contains(wrapper)){ clearInterval(spInterval); return; }
+          updateSpotifyProgress();
+        }, 1000);
+      }
+
+      // Other activities (games, streaming, watching etc.)
+      const otherActs = (presence.activities || []).filter(a => !(a.type === 4 || (a.name && a.name.toLowerCase().includes('spotify'))));
+      // Sort so playing/streaming appear first
+      otherActs.sort((a,b)=> (a.type||0) - (b.type||0));
+
+      otherActs.forEach(act => {
+        // skip invisible / empty
+        if(!act.name) return;
+        hasAny = true;
+        const block = document.createElement('div');
+        block.className = 'act';
+        // try to get an image for activity: act.assets.large_image may be 'spotify:...' or 'mp:...'
+        let iconUrl = '';
+        if(act.assets && act.assets.large_image){
+          const imgRef = act.assets.large_image;
+          // common formats: 'mp:assethash' or 'spotify:ab123' or 'external[...]' etc.
+          // attempt to handle discord app asset format "mp:..."
+          if(imgRef.startsWith('mp:') || imgRef.startsWith('application_id:')){
+            // can't reliably build CDN URL for app assets client-side without more info, skip
+            iconUrl = '';
+          } else if(imgRef.startsWith('spotify:')){
+            // spotify cover fallback (we already have spotify section), skip
+            iconUrl = '';
+          } else {
+            // sometimes large_image contains a raw hash that can map to cdn for activity's application id.
+            iconUrl = ''; // leave blank (style will show neutral color)
+          }
+        }
+        // create inner
+        block.innerHTML = `
+          <div class="act-icon" style="${iconUrl ? `background-image:url('${iconUrl}');` : ''}"></div>
+          <div class="act-body">
+            <div class="name">${escapeHtml(act.name)}</div>
+            <div class="meta">${escapeHtml((act.details || act.state || '').toString())}</div>
+          </div>
+        `;
+        activitiesEl.appendChild(block);
+      });
+
+      if(!hasAny){
+        noActivityEl.style.display = 'block';
+      } else {
+        noActivityEl.style.display = 'none';
+      }
+
+      // last updated
+      lastUpdatedEl.textContent = `Son güncelleme: ${new Date().toLocaleTimeString('tr-TR')}`;
+    }
+
+    // escape simple HTML to avoid injection from external data
+    function escapeHtml(s){
+      if(!s && s !== 0) return '';
+      return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+    }
+
+    // Lanyard websocket protocol: on open we should listen for HELLO messages and then send subscribe
+    socket.addEventListener('open', ()=> {
+      console.log('Lanyard socket opened');
+    });
+
+    socket.addEventListener('message', (ev)=> {
+      let payload;
+      try { payload = JSON.parse(ev.data); } catch(e){ return; }
+      const op = payload.op;
+      // op 1 = hello contains heartbeat_interval
+      if(op === 1 && payload.d && payload.d.heartbeat_interval){
+        const intervalMs = payload.d.heartbeat_interval;
+        if(heartbeatInterval) clearInterval(heartbeatInterval);
+        heartbeatInterval = setInterval(()=> socket.send(JSON.stringify({op:3})), intervalMs);
+        // subscribe
+        socket.send(JSON.stringify({op:2, d:{ subscribe_to_id: DISCORD_USER_ID }}));
+        return;
+      }
+      // presence events come as t: "INIT_STATE" or "PRESENCE_UPDATE" and data in d
+      if(payload.t === 'INIT_STATE' || payload.t === 'PRESENCE_UPDATE'){
+        const presence = payload.d;
+        renderPresence(presence);
+      }
+      // handle disconnects or errors silently; Lanyard may also send HEARTBEAT_ACK etc.
+    });
+
+    socket.addEventListener('close', ()=> {
+      console.warn('Socket closed — yeniden bağlanma deneniyor 5s sonra');
+      setTimeout(()=> { location.reload(); }, 5000);
+    });
+
+    socket.addEventListener('error', (e)=> {
+      console.error('WebSocket error', e);
+    });
+
+    // initial fallback: fetch last known presence from Lanyard REST as fallback (optional)
+    // helps when WS handshake delayed. We'll fetch once.
+    (async function fetchOnce(){
+      try{
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+        const json = await res.json();
+        if(json && json.success && json.data){
+          renderPresence(json.data);
+        }
+      }catch(err){
+        console.warn('Lanyard REST fetch failed', err);
+      }
+    })();
+
+  </script>
 </body>
 </html>
