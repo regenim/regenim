@@ -1,119 +1,417 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Öykü ❤️ Zahid</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Biz — Discord'ta Tanıştık</title>
+
+  <!-- Google Font (internet bağlantısı varsa yüklenir) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-image: url('png');
-      background-size: cover;
-      background-position: center;
-      font-family: 'Comic Sans MS', cursive;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      position: relative;
+    :root{
+      --bg:#0f1720;
+      --panel:#111827;
+      --accent:#5865f2; /* discord moru */
+      --muted:#9aa4b2;
+      --glass: rgba(255,255,255,0.04);
+      color-scheme: dark;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: radial-gradient(1000px 600px at 10% 10%, rgba(88,101,242,0.08), transparent),
+                  linear-gradient(180deg,#071025 0%, #07102b 60%);
+      color: #e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:32px;
     }
 
-    #startButton {
-      padding: 20px 40px;
-      font-size: 24px;
-      background-color: #ff69b4;
-      border: none;
-      border-radius: 12px;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: 0.3s;
-      z-index: 10;
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: 1fr 380px;
+      gap:28px;
+      align-items:start;
     }
 
-    #startButton:hover {
-      background-color: #ff1493;
+    /* LEFT - main column */
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:20px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      border: 1px solid rgba(255,255,255,0.03);
     }
 
-    #mainText {
-      display: none;
-      position: absolute;
-      top: 40%;
-      width: 100%;
-      text-align: center;
-      font-size: 48px;
-      color: #ff1493;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-      z-index: 5;
+    header.hero{
+      display:flex;
+      gap:18px;
+      align-items:center;
+    }
+    .avatars{
+      width:120px;
+      height:120px;
+      border-radius:20px;
+      background:linear-gradient(135deg, rgba(88,101,242,0.18), rgba(255,90,120,0.08));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:visible;
+    }
+    .avatar{
+      width:72px;height:72px;border-radius:12px;
+      border:3px solid rgba(0,0,0,0.45);
+      background-size:cover;background-position:center;
+      box-shadow:0 6px 18px rgba(16,20,30,0.6);
+    }
+    .avatar+a{ margin-left:8px }
+    .names{
+      flex:1;
+    }
+    .names h1{ margin:0;font-size:20px;letter-spacing:-0.2px}
+    .names p{ margin:6px 0 0;color:var(--muted); font-size:13px }
+
+    .meta-row{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .pill{
+      background:var(--glass);
+      padding:8px 12px;border-radius:999px;
+      font-size:13px;color:var(--muted);
+      display:inline-flex;gap:8px;align-items:center;
+      border:1px solid rgba(255,255,255,0.02);
     }
 
-    .emoji {
-      position: absolute;
-      font-size: 32px;
-      animation: float 6s linear infinite;
-      z-index: 1;
+    /* Counter */
+    .counter{
+      margin-top:16px;
+      display:flex;gap:12px;align-items:center;
+    }
+    .counter .big{
+      font-size:28px;font-weight:700;color:var(--accent);
+    }
+    .counter small{ color:var(--muted) }
+
+    /* Timeline */
+    .timeline{
+      margin-top:18px;
+      display:grid;
+      gap:12px;
+    }
+    .event{
+      display:flex;gap:12px;align-items:flex-start;
+    }
+    .dot{
+      width:12px;height:12px;border-radius:50%;
+      background:linear-gradient(180deg,var(--accent), #ff6f91);
+      margin-top:6px;
+      box-shadow:0 4px 12px rgba(88,101,242,0.18);
+    }
+    .event .content{
+      background: rgba(255,255,255,0.02);
+      padding:10px 12px;border-radius:10px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .event .content time{ display:block;font-size:12px;color:var(--muted); margin-bottom:6px }
+
+    /* Right column */
+    aside{
+      position:sticky; top:32px;
+    }
+    .panel{
+      padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .gallery{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px;
+    }
+    .thumb{
+      width:100%;aspect-ratio:1.4/1;border-radius:8px;background-size:cover;background-position:center;
+      cursor:pointer;transition:transform .15s ease;
+    }
+    .thumb:hover{ transform:translateY(-6px) }
+
+    /* audio controls */
+    .song-row{ display:flex;gap:10px;align-items:center;margin-top:12px }
+    .play-btn{
+      padding:10px 12px;border-radius:10px;background:var(--accent);color:white;font-weight:600;border:none;
+      cursor:pointer;box-shadow:0 8px 30px rgba(88,101,242,0.18);
     }
 
-    @keyframes float {
-      0% {
-        transform: translateY(100vh) scale(1);
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-10vh) scale(1.5);
-        opacity: 0;
-      }
+    /* modal */
+    .modal{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:60;
+    }
+    .modal.open{ display:flex }
+    .modal .modal-card{ width:min(900px,95%); background:#0b1220;border-radius:12px;padding:16px; }
+    .modal img{ width:100%; height:auto; border-radius:8px; display:block }
+
+    footer{ margin-top:20px; text-align:center; color:var(--muted); font-size:13px }
+
+    /* responsive */
+    @media (max-width:980px){
+      .container{ grid-template-columns:1fr; padding-bottom:50px }
+      aside{ position:static }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <main class="card" aria-labelledby="title">
+      <header class="hero">
+        <div class="avatars" aria-hidden="true">
+          <!-- Replace background-image urls with your avatar images -->
+          <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop&s=...');"></div>
+          <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop&s=...'); margin-left:10px; transform: translateX(-8px);"></div>
+        </div>
 
-  <button id="startButton">💖 Başlat 💖</button>
-  <div id="mainText">Öykü ❤️ Zahid</div>
+        <div class="names">
+          <h1 id="title">Ayşe ❤️ Emre</h1>
+          <p>Discord'da tanıştılar • İlk mesaj: 2023-02-12 • Şaka: Emre hep geç kalır</p>
 
-  <audio id="bgMusic" loop>
-    <source src="romantik-muzik.mp3" type="audio/mpeg">
-    Tarayıcınız ses öğesini desteklemiyor.
-  </audio>
+          <div class="meta-row" role="list">
+            <div class="pill" role="listitem">💬 Tanışma: Discord Lobby</div>
+            <div class="pill" role="listitem">🎮 Favori oyun: Among Us</div>
+            <div class="pill" role="listitem" id="currentActivity">🔴 Durum: Çevrimiçi değil</div>
+          </div>
+
+          <div class="counter" aria-live="polite">
+            <div>
+              <div class="big" id="daysTogether">0</div>
+              <small>gün beraber</small>
+            </div>
+            <div style="margin-left:auto;text-align:right">
+              <small style="color:var(--muted)">İlk tanışma: <strong id="meetDate">12 Şubat 2023</strong></small><br>
+              <small style="color:var(--muted)">Güncelleme: otomatik</small>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="timeline" aria-label="Önemli Anlar">
+        <div class="event">
+          <div class="dot" aria-hidden="true"></div>
+          <div class="content">
+            <time>12 Şubat 2023</time>
+            <strong>İlk mesaj</strong>
+            <div style="margin-top:6px;color:var(--muted)">Şans eseri aynı lobiye düştük, "gf?" diye sormuştum, işte o an her şey başladı.</div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="dot" aria-hidden="true"></div>
+          <div class="content">
+            <time>18 Mart 2023</time>
+            <strong>İlk sesli görüşme</strong>
+            <div style="margin-top:6px;color:var(--muted)">3 saatlik sohbet — ikimiz de uyku problemleri yaşadık sanırım 🥱</div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="dot" aria-hidden="true"></div>
+          <div class="content">
+            <time>01 Mayıs 2023</time>
+            <strong>İlk buluşma</strong>
+            <div style="margin-top:6px;color:var(--muted)">Parkta buluşup oyun oynadık — telefonlar ikinci plandaydı.</div>
+          </div>
+        </div>
+
+      </section>
+
+      <footer>
+        <small>Bu bir örnek site. Geliştirmek istersen özelleştirebilirim — tema, fontlar, veya özel domain gibi.</small>
+      </footer>
+    </main>
+
+    <aside>
+      <div class="panel card" aria-labelledby="galleryTitle">
+        <h3 id="galleryTitle" style="margin:0 0 8px 0">Galeri</h3>
+
+        <div class="gallery" id="gallery">
+          <!-- Thumbnails: Replace background-image with your own photo URLs -->
+          <div class="thumb" tabindex="0" role="button" aria-label="Fotoğraf 1"
+               style="background-image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop&s=...')"
+               data-full="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1200&auto=format&fit=crop&s=..."></div>
+
+          <div class="thumb" tabindex="0" role="button" aria-label="Fotoğraf 2"
+               style="background-image:url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop&s=...')"
+               data-full="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200&auto=format&fit=crop&s=..."></div>
+
+          <div class="thumb" tabindex="0" role="button" aria-label="Fotoğraf 3"
+               style="background-image:url('https://images.unsplash.com/photo-1524503033411-c9566986fc8f?q=80&w=800&auto=format&fit=crop&s=...')"
+               data-full="https://images.unsplash.com/photo-1524503033411-c9566986fc8f?q=80&w=1200&auto=format&fit=crop&s=..."></div>
+
+          <div class="thumb" tabindex="0" role="button" aria-label="Fotoğraf 4"
+               style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop&s=...')"
+               data-full="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1200&auto=format&fit=crop&s=..."></div>
+        </div>
+
+        <div class="song-row">
+          <button class="play-btn" id="playBtn" aria-pressed="false">▶ Çal — Bizim Şarkı</button>
+          <div style="font-size:13px;color:var(--muted)">Ses: otomatik kapalı, butona basınca çalar</div>
+        </div>
+
+        <div style="margin-top:12px;color:var(--muted);font-size:13px">
+          <strong>Discord Nickleri</strong>
+          <div>Ayşe#1234</div>
+          <div>Emre#9876</div>
+        </div>
+      </div>
+
+      <div class="panel card" style="margin-top:18px">
+        <h3 style="margin:0 0 8px 0">Mini Oyun Köşesi</h3>
+        <p style="color:var(--muted);margin:0 0 12px 0">Kısa bir anket: Hangimiz Valorant'ta daha iyiyiz?</p>
+        <form id="funForm">
+          <label style="display:block;margin-bottom:8px"><input type="radio" name="who" value="ayse" checked> Ayşe</label>
+          <label style="display:block;margin-bottom:8px"><input type="radio" name="who" value="emre"> Emre</label>
+          <label style="display:block;margin-bottom:8px"><input type="radio" name="who" value="beraber"> Beraber</label>
+          <button type="submit" class="play-btn" style="margin-top:12px">Oyla</button>
+          <div id="funResult" style="margin-top:10px;color:var(--muted)"></div>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Modal for gallery -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <button id="closeModal" style="float:right;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer">✕</button>
+      <img id="modalImg" src="" alt="Fotoğraf büyük gösterim">
+      <div style="margin-top:8px;color:var(--muted);font-size:13px">Fotoğraf</div>
+    </div>
+  </div>
+
+  <!-- Hidden audio element (replace src with your song URL or relative path) -->
+  <audio id="song" preload="none" src=""></audio>
 
   <script>
-    const button = document.getElementById('startButton');
-    const text = document.getElementById('mainText');
-    const music = document.getElementById('bgMusic');
+    // ---------- Config ----------
+    const meetDateStr = '2023-02-12'; // YYYY-MM-DD format for counter
+    const meetDate = new Date(meetDateStr + 'T00:00:00');
 
-    const emojis = ["💖", "💘", "💕", "💞", "💓", "💗", "💝", "💟", "❤️", "🩷"];
+    // ------------- Counter -------------
+    function calcDaysTogether() {
+      const now = new Date();
+      // compute difference in UTC days to avoid timezone subtle errors
+      const utcNow = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+      const utcMeet = Date.UTC(meetDate.getFullYear(), meetDate.getMonth(), meetDate.getDate());
+      const diffDays = Math.floor((utcNow - utcMeet) / (1000*60*60*24));
+      return diffDays >= 0 ? diffDays : 0;
+    }
+    function updateCounter(){
+      document.getElementById('daysTogether').textContent = calcDaysTogether();
+      // show readable date in Turkish
+      const meetDateLabel = new Date(meetDate);
+      const opts = { year:'numeric', month:'long', day:'numeric' };
+      document.getElementById('meetDate').textContent = meetDateLabel.toLocaleDateString('tr-TR', opts);
+    }
+    updateCounter();
 
-    function createEmoji() {
-      const emoji = document.createElement("div");
-      emoji.classList.add("emoji");
-      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.fontSize = (24 + Math.random() * 24) + "px";
-      emoji.style.animationDuration = (3 + Math.random() * 5) + "s";
-      document.body.appendChild(emoji);
+    // ------------- Gallery modal -------------
+    const thumbs = document.querySelectorAll('.thumb');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+    const closeModal = document.getElementById('closeModal');
 
-      setTimeout(() => {
-        emoji.remove();
-      }, 8000);
+    thumbs.forEach(t => {
+      t.addEventListener('click', () => openModal(t.dataset.full));
+      t.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(t.dataset.full); }});
+    });
+    function openModal(src){
+      if(!src) return;
+      modalImg.src = src;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+      closeModal.focus();
+    }
+    closeModal.addEventListener('click', close);
+    modal.addEventListener('click', (e) => { if(e.target === modal) close(); });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') close(); });
+    function close(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+      modalImg.src = '';
     }
 
-    button.addEventListener('click', () => {
-      button.style.display = 'none';
-      text.style.display = 'block';
-      music.play();
+    // ------------- Audio play -------------
+    const playBtn = document.getElementById('playBtn');
+    const audio = document.getElementById('song');
+    // TODO: replace with your audio file or remote URL (mp3/ogg). If left empty, button will show hint.
+    audio.src = ''; // e.g. 'audio/our-song.mp3' or 'https://example.com/song.mp3'
 
-      // Emojileri sürekli üret
-      setInterval(() => {
-        for (let i = 0; i < 4; i++) {
-          createEmoji();
+    playBtn.addEventListener('click', async () => {
+      if(!audio.src){
+        alert('Şarkı dosyası ayarlanmamış. HTML içindeki audio.src satırını kendi mp3/ogg URL\'nizle değiştirin.');
+        return;
+      }
+      if(audio.paused){
+        try{
+          await audio.play();
+          playBtn.textContent = '⏸ Durdur';
+          playBtn.setAttribute('aria-pressed','true');
+        }catch(err){
+          console.warn('Çalma hatası:', err);
+          alert('Tarayıcı otomatik çalmaya izin vermedi. Lütfen sayfada bir etkileşim yapın (butona basın).');
         }
-      }, 500);
+      }else{
+        audio.pause();
+        playBtn.textContent = '▶ Çal — Bizim Şarkı';
+        playBtn.setAttribute('aria-pressed','false');
+      }
     });
-  </script>
 
+    audio.addEventListener('ended', () => {
+      playBtn.textContent = '▶ Çal — Bizim Şarkı';
+      playBtn.setAttribute('aria-pressed','false');
+    });
+
+    // ------------- Fun form -------------
+    document.getElementById('funForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const choice = document.querySelector('input[name="who"]:checked').value;
+      const result = document.getElementById('funResult');
+      if(choice === 'ayse') result.textContent = 'Ayşe galip! Tebrikler 🎉';
+      else if(choice === 'emre') result.textContent = 'Emre galip! Vay be 👏';
+      else result.textContent = 'Beraber kazanıyorsunuz, aşk zaferi 🥰';
+    });
+
+    // ------------- Simüle Basit "Discord Activity" -------------
+    // Gerçek Rich Presence için back-end / Discord entegrasyonu gerekir.
+    // Burada demo amaçlı rastgele durum değiştiren bir simülasyon var.
+    const activities = [
+      '🎧 Spotify: Lo-fi Beats',
+      '🎮 Among Us lobi',
+      '📚 Ders çalışıyor',
+      '🍳 Mutfakta',
+      '💤 Çevrimdışı'
+    ];
+    function cycleActivity(){
+      const idx = Math.floor(Math.random()*activities.length);
+      const el = document.getElementById('currentActivity');
+      el.textContent = activities[idx];
+    }
+    cycleActivity();
+    setInterval(cycleActivity, 12000);
+
+    // Accessibility: ensure focus trap for modal when open (simple)
+    modal.addEventListener('keydown', (e) => {
+      if(e.key === 'Tab'){
+        e.preventDefault();
+        closeModal.focus();
+      }
+    });
+
+    // end of script
+  </script>
 </body>
 </html>
