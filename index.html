@@ -7,7 +7,7 @@
   <style>
     :root{
       --bg:#0b1020; --card:#0f1724; --muted:#9aa4b2;
-      --online:#43b581; --idle:#faa61a; --dnd:#f04747; --offline:#747f8d;
+      --Aktif:#43b581; --Boşta:#faa61a; --Rahatsız Etmeyin:#f04747; --Offline:#747f8d;
       --accent:#7289da;
     }
     *{box-sizing:border-box}
@@ -68,13 +68,13 @@
       <div class="placeholder" id="noActivity">Hiç aktif bir etkinlik görünmüyor.</div>
     </div>
 
-    <div class="small" id="lastUpdated"></div>
+    <div class="small" id="lastUpdated">Son güncelleme: —</div>
     <footer></footer>
   </div>
 
   <script>
     // ====== AYAR: buraya kendi Discord user ID'nizi koyun ======
-    const DISCORD_USER_ID = "461158648526143490"; // <-- değiştir
+    const DISCORD_USER_ID = "USER_ID_HERE"; // <-- değiştir
 
     // Lanyard websocket
     const socket = new WebSocket("wss://api.lanyard.rest/socket");
@@ -94,8 +94,8 @@
     function setPresenceDot(status){
       // online, idle, dnd, offline
       if(status === 'online') presenceDot.style.background = 'var(--Aktif)';
-      else if(status === 'idle') presenceDot.style.background = 'var(--Boşta)';
-      else if(status === 'dnd') presenceDot.style.background = 'var(--Rahatsız Etmeyin)';
+      else if(status === 'Boşta') presenceDot.style.background = 'var(--Boşta)';
+      else if(status === 'Rahatsız Etmeyin') presenceDot.style.background = 'var(--Rahatsız Etmeyin)';
       else presenceDot.style.background = 'var(--Offline)';
     }
 
