@@ -126,10 +126,9 @@
       const discordUser = presence.discord_user || {};
       const discordId = discordUser.id || DISCORD_USER_ID;
 
-      // username + discriminator
-      usernameEl.textContent = discordUser.username || 'Bilinmiyor';
-      if(discordUser.discriminator) discrEl.textContent = `#${discordUser.discriminator}`;
-      else discrEl.textContent = '';
+      // sadece username
+usernameEl.textContent = discordUser.username || 'Bilinmiyor';
+discrEl.textContent = '';  // discriminator boş bırakılıyor, hiç gösterilmiyor
 
       // avatar
       avatarEl.style.backgroundImage = `url('${avatarUrl(discordId, discordUser.avatar)}')`;
