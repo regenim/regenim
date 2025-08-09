@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Discord Profil Kartı — Canlı</title>
+  <title>zahid</title>
   <style>
     :root{
       --bg:#0b1020; --card:#0f1724; --muted:#9aa4b2;
@@ -93,10 +93,10 @@
 
     function setPresenceDot(status){
       // online, idle, dnd, offline
-      if(status === 'online') presenceDot.style.background = 'var(--online)';
-      else if(status === 'idle') presenceDot.style.background = 'var(--idle)';
-      else if(status === 'dnd') presenceDot.style.background = 'var(--dnd)';
-      else presenceDot.style.background = 'var(--offline)';
+      if(status === 'online') presenceDot.style.background = 'var(--Aktif)';
+      else if(status === 'idle') presenceDot.style.background = 'var(--Boşta)';
+      else if(status === 'dnd') presenceDot.style.background = 'var(--Rahatsız Etmeyin)';
+      else presenceDot.style.background = 'var(--Offline)';
     }
 
     // Construct avatar URL (discord CDN)
@@ -254,7 +254,7 @@
       }
 
       // last updated
-      lastUpdatedEl.textContent = `Son güncelleme: ${new Date().toLocaleTimeString('tr-TR')}`;
+      lastUpdatedEl.textContent = ``;
     }
 
     // escape simple HTML to avoid injection from external data
