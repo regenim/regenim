@@ -1,316 +1,210 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>zahid</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Örnek E-Ticaret Sitesi</title>
   <style>
-    :root{
-      --bg:#0b1020; --card:#0f1724; --muted:#9aa4b2;
-      --Aktif:#43b581; --Boşta:#faa61a; --Rahatsız Etmeyin:#f04747; --Offline:#747f8d;
-      --accent:#7289da;
-    }
+    :root{--accent:#4f46e5;--muted:#6b7280;--bg:#f8fafc}
     *{box-sizing:border-box}
-    body{
-      margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-      font-family:Inter, Poppins, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg,#07102b 0%, #081426 60%);
-      color:#eaf0ff; padding:24px;
-    }
-    .card{
-      width:360px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.03); border-radius:14px; padding:16px; box-shadow:0 12px 40px rgba(2,6,23,0.7);
-    }
-    .top{
-      display:flex; gap:12px; align-items:center;
-    }
-    .avatar{
-      width:76px; height:76px; border-radius:14px; background:#111; background-size:cover; background-position:center;
-      border:3px solid rgba(0,0,0,0.45);
-    }
-    .info h2{ margin:0; font-size:18px; display:flex; gap:8px; align-items:center; }
-    .username { font-weight:700; letter-spacing:-0.2px }
-    .discr { font-weight:500; color:var(--muted); font-size:13px }
-    .status-row{ margin-top:6px; display:flex; gap:8px; align-items:center; }
-    .presence-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; box-shadow:0 6px 18px rgba(0,0,0,0.45) }
-    .custom-status{ margin-top:10px; padding:10px; background:rgba(255,255,255,0.02); border-radius:10px; font-size:13px; color:var(--muted) }
-    .activities{ margin-top:12px; display:flex; flex-direction:column; gap:10px }
-    .act{ background: rgba(255,255,255,0.02); padding:10px; border-radius:10px; display:flex; gap:10px; align-items:center; border:1px solid rgba(255,255,255,0.02) }
-    .act .act-icon{ width:48px; height:48px; border-radius:8px; background:#0b1220; background-size:cover; background-position:center; }
-    .act .act-body{ flex:1 }
-    .act .name{ font-weight:600; font-size:14px }
-    .act .meta{ color:var(--muted); font-size:13px; margin-top:4px }
-    .spotify{ display:flex; gap:10px; align-items:center }
-    .spotify img{ width:64px; height:64px; border-radius:8px; object-fit:cover; }
-    .progress{ height:6px; background:rgba(255,255,255,0.03); border-radius:6px; margin-top:8px; overflow:hidden }
-    .progress > i{ display:block; height:100%; background:linear-gradient(90deg,var(--accent), #ff7bc1); width:0% }
-    .small{ color:var(--muted); font-size:12px; margin-top:8px; text-align:right }
-    footer{ margin-top:10px; color:var(--muted); font-size:12px; text-align:center }
-    .placeholder{ color:var(--muted); font-size:13px; padding:10px; background:rgba(255,255,255,0.01); border-radius:10px; text-align:center }
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:var(--bg); color:#111}
+    header{background:#fff;border-bottom:1px solid #e6edf3;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),#06b6d4);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    nav a{margin-right:14px;color:var(--muted);text-decoration:none}
+    .container{max-width:1100px;margin:28px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+    .card{background:#fff;border-radius:10px;padding:14px;border:1px solid #e6edf3;display:flex;flex-direction:column;gap:10px}
+    .card img{width:100%;height:160px;object-fit:cover;border-radius:6px}
+    .title{font-weight:600}
+    .price{color:var(--accent);font-weight:700}
+    .meta{color:var(--muted);font-size:13px}
+    .btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+    .btn.secondary{background:#fff;color:var(--accent);border:1px solid #e9e9ff}
+    .cart-toggle{position:relative}
+    .cart-count{position:absolute;right:-8px;top:-8px;background:#ef4444;color:white;border-radius:999px;padding:4px 7px;font-size:12px}
+    /* Cart drawer */
+    .drawer{position:fixed;right:20px;top:80px;width:360px;max-width:90vw;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,.15);padding:16px;display:none;z-index:60}
+    .drawer.open{display:block}
+    .drawer h3{margin:0 0 8px}
+    .cart-item{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px dashed #eef2f6}
+    .cart-item img{width:56px;height:56px;object-fit:cover;border-radius:8px}
+    .qty{display:flex;gap:6px;align-items:center}
+    footer{margin:48px 0 80px;color:var(--muted);text-align:center}
+    /* Responsive */
+    @media (max-width:640px){header{padding:12px} .brand .label{display:none}}
   </style>
 </head>
 <body>
-  <div class="card" id="card">
-    <div class="top">
-      <div class="avatar" id="avatar" aria-hidden="true"></div>
-      <div class="info">
-        <h2><span class="username" id="username">Yükleniyor...</span><span class="discr" id="discr"></span></h2>
-        <div class="status-row">
-          <span class="presence-dot" id="presenceDot" style="background:var(--offline)"></span>
-          <div id="presenceText" style="color:var(--muted); font-size:13px">Durum: Bilinmiyor</div>
-        </div>
+  <header>
+    <div class="brand">
+      <div class="logo">ET</div>
+      <div>
+        <div style="font-weight:700">MiniMağaza</div>
+        <div class="muted" style="font-size:12px;color:var(--muted)">Hızlı, basit e-ticaret demo</div>
       </div>
     </div>
 
-    <div id="customStatus" class="custom-status" style="display:none"></div>
+    <nav>
+      <a href="#">Ürünler</a>
+      <a href="#">Hakkımızda</a>
+      <a href="#">İletişim</a>
+      <button class="btn cart-toggle" id="openCart">Sepet <span class="cart-count" id="cartCount">0</span></button>
+    </nav>
+  </header>
 
-    <div class="activities" id="activities">
-      <div class="placeholder" id="noActivity">Hiç aktif bir etkinlik görünmüyor.</div>
+  <main class="container">
+    <section style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px">
+      <div>
+        <h1 style="margin:0">Popüler Ürünler</h1>
+        <p style="margin:6px 0 0;color:var(--muted)">Hazır demo ürünler — hızlıca teste başlayabilirsin.</p>
+      </div>
+      <div>
+        <input id="search" placeholder="Ürün ara..." style="padding:8px;border-radius:8px;border:1px solid #e6edf3;min-width:200px" />
+      </div>
+    </section>
+
+    <section class="grid" id="productGrid">
+      <!-- Ürünler JS ile eklenecek -->
+    </section>
+  </main>
+
+  <aside class="drawer" id="cartDrawer" aria-hidden="true">
+    <h3>Sepetin</h3>
+    <div id="cartItems" style="max-height:320px;overflow:auto;margin-bottom:12px"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-weight:700">Toplam:</div>
+      <div id="cartTotal" style="font-weight:700;color:var(--accent)">0 ₺</div>
     </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="checkoutBtn">Ödeme Yap</button>
+      <button class="btn secondary" id="clearCart">Sepeti Temizle</button>
+    </div>
+  </aside>
 
-    <div class="small" id="lastUpdated">Son güncelleme: —</div>
-    <footer></footer>
-  </div>
+  <footer>
+    Bu demo site eğitim amaçlıdır — gerçek ödeme altyapısı içermez.
+  </footer>
 
   <script>
-    // ====== AYAR: buraya kendi Discord user ID'nizi koyun ======
-    const DISCORD_USER_ID = "461158648526143490"; // <-- değiştir
+    // Örnek ürün verisi
+    const products = [
+      {id:1,title:'LED Masa Lambası',price:179,desc:'Dokunmatik, 7 renk',img:'https://via.placeholder.com/400x300?text=LED+Lamba'},
+      {id:2,title:'Telefon Kılıfı',price:59,desc:'Silikon, ince tasarım',img:'https://via.placeholder.com/400x300?text=Telefon+Kılıfı'},
+      {id:3,title:'Minimal Poster',price:49,desc:'A3 baskı, mat kağıt',img:'https://via.placeholder.com/400x300?text=Poster'},
+      {id:4,title:'Kokulu Mum',price:39,desc:'El yapımı, vanilya kokusu',img:'https://via.placeholder.com/400x300?text=Mum'},
+      {id:5,title:'Anahtarlık',price:29,desc:'Metal, gravürlü',img:'https://via.placeholder.com/400x300?text=Anahtarlık'},
+      {id:6,title:'Taşınabilir Fan',price:119,desc:'USB ile çalışır',img:'https://via.placeholder.com/400x300?text=Fan'}
+    ];
 
-    // Lanyard websocket
-    const socket = new WebSocket("wss://api.lanyard.rest/socket");
-    let heartbeatInterval = null;
+    // Basit sepet mantığı
+    const cart = {};
+    const grid = document.getElementById('productGrid');
+    const cartCount = document.getElementById('cartCount');
+    const cartDrawer = document.getElementById('cartDrawer');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
 
-    // element refs
-    const avatarEl = document.getElementById('avatar');
-    const usernameEl = document.getElementById('username');
-    const discrEl = document.getElementById('discr');
-    const presenceDot = document.getElementById('presenceDot');
-    const presenceText = document.getElementById('presenceText');
-    const customStatusEl = document.getElementById('customStatus');
-    const activitiesEl = document.getElementById('activities');
-    const noActivityEl = document.getElementById('noActivity');
-    const lastUpdatedEl = document.getElementById('lastUpdated');
-
-    function setPresenceDot(status){
-      // online, idle, dnd, offline
-      if(status === 'online') presenceDot.style.background = 'var(--Aktif)';
-      else if(status === 'Boşta') presenceDot.style.background = 'var(--Boşta)';
-      else if(status === 'Rahatsız Etmeyin') presenceDot.style.background = 'var(--Rahatsız Etmeyin)';
-      else presenceDot.style.background = 'var(--Offline)';
-    }
-
-    // Construct avatar URL (discord CDN)
-    function avatarUrl(id, avatarHash){
-      if(!avatarHash){
-        // default avatar (discriminator modulo 5)
-        return `https://cdn.discordapp.com/embed/avatars/0.png`;
-      }
-      // if animated avatar prefix 'a_' you could use gif
-      const ext = avatarHash.startsWith('a_') ? 'gif' : 'png';
-      return `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.${ext}?size=512`;
-    }
-
-    // Pretty format ms -> mm:ss
-    function msToMMSS(ms){
-      if(!ms && ms !== 0) return '0:00';
-      const s = Math.floor(ms/1000);
-      const m = Math.floor(s/60);
-      const sec = s % 60;
-      return `${m}:${sec.toString().padStart(2,'0')}`;
-    }
-
-    // Render presence object from Lanyard
-    function renderPresence(presence){
-      // presence is an object as returned by Lanyard (data.d)
-      // Example keys: discord_user, discord_status, activities[], listening_to_spotify, spotify{...}, kv...
-      const discordUser = presence.discord_user || {};
-      const discordId = discordUser.id || DISCORD_USER_ID;
-
-      // sadece username
-usernameEl.textContent = discordUser.username || 'Bilinmiyor';
-discrEl.textContent = '';  // discriminator boş bırakılıyor, hiç gösterilmiyor
-
-      // avatar
-      avatarEl.style.backgroundImage = `url('${avatarUrl(discordId, discordUser.avatar)}')`;
-
-      // presence status
-      const status = presence.discord_status || 'offline';
-      setPresenceDot(status);
-      presenceText.textContent = `Durum: ${status}`;
-
-      // custom status: an activity where type === 4 or name === 'Custom Status'
-      const custom = (presence.activities || []).find(a => a.type === 4 || (a.name && a.name.toLowerCase().includes('custom')));
-      if(custom && (custom.state || custom.emoji)){
-        let cs = '';
-        if(custom.emoji){
-          // emoji may be like {name:'💖'} or custom emoji object
-          cs += (custom.emoji.name ? custom.emoji.name + ' ' : '');
-        }
-        if(custom.state) cs += custom.state;
-        customStatusEl.style.display = 'block';
-        customStatusEl.textContent = cs;
-      } else {
-        customStatusEl.style.display = 'none';
-      }
-
-      // activities area: prefer spotify first, then other activities
-      activitiesEl.querySelectorAll('.act').forEach(n => n.remove());
-      let hasAny = false;
-
-      // Spotify handling
-      if(presence.listening_to_spotify && presence.spotify){
-        hasAny = true;
-        const s = presence.spotify;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'act spotify';
-        wrapper.innerHTML = `
-          <img id="spArt" src="${s.album_art_url}" alt="Spotify album">
-          <div style="flex:1">
-            <div style="font-weight:700">${escapeHtml(s.song || '—')}</div>
-            <div style="color:var(--muted); font-size:13px; margin-top:4px">${escapeHtml(s.artist || '')}</div>
-            <div class="progress"><i id="spProgress" style="width:0%"></i></div>
-            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:6px">
-              <span id="spElapsed">0:00</span><span id="spRemaining">-</span>
+    function renderProducts(list){
+      grid.innerHTML = '';
+      list.forEach(p=>{
+        const el = document.createElement('article');
+        el.className = 'card';
+        el.innerHTML = `
+          <img src="${p.img}" alt="${p.title}">
+          <div class="title">${p.title}</div>
+          <div class="meta">${p.desc}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+            <div class="price">${p.price} ₺</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn" data-id="${p.id}">Sepete Ekle</button>
             </div>
           </div>
         `;
-        activitiesEl.prepend(wrapper);
+        grid.appendChild(el);
+      });
+    }
 
-        // progress update function using timestamps if available
-        function updateSpotifyProgress(){
-          const now = Date.now();
-          const start = s.timestamps?.start ?? null;
-          const end = s.timestamps?.end ?? null;
-          const elapsedEl = wrapper.querySelector('#spElapsed');
-          const remEl = wrapper.querySelector('#spRemaining');
-          const bar = wrapper.querySelector('#spProgress');
-
-          if(start && end){
-            const total = end - start;
-            const elapsed = Math.max(0, Math.min(total, now - start));
-            const pct = Math.round((elapsed / total) * 100);
-            bar.style.width = pct + '%';
-            elapsedEl.textContent = msToMMSS(elapsed);
-            const remain = total - elapsed;
-            remEl.textContent = `-${msToMMSS(remain)}`;
-          } else {
-            bar.style.width = '0%';
-            elapsedEl.textContent = '0:00';
-            remEl.textContent = '-';
-          }
-        }
-        updateSpotifyProgress();
-        // update every second if spotify timestamps available
-        const spInterval = setInterval(()=> {
-          if(!document.body.contains(wrapper)){ clearInterval(spInterval); return; }
-          updateSpotifyProgress();
-        }, 1000);
-      }
-
-      // Other activities (games, streaming, watching etc.)
-      const otherActs = (presence.activities || []).filter(a => !(a.type === 4 || (a.name && a.name.toLowerCase().includes('spotify'))));
-      // Sort so playing/streaming appear first
-      otherActs.sort((a,b)=> (a.type||0) - (b.type||0));
-
-      otherActs.forEach(act => {
-        // skip invisible / empty
-        if(!act.name) return;
-        hasAny = true;
-        const block = document.createElement('div');
-        block.className = 'act';
-        // try to get an image for activity: act.assets.large_image may be 'spotify:...' or 'mp:...'
-        let iconUrl = '';
-        if(act.assets && act.assets.large_image){
-          const imgRef = act.assets.large_image;
-          // common formats: 'mp:assethash' or 'spotify:ab123' or 'external[...]' etc.
-          // attempt to handle discord app asset format "mp:..."
-          if(imgRef.startsWith('mp:') || imgRef.startsWith('application_id:')){
-            // can't reliably build CDN URL for app assets client-side without more info, skip
-            iconUrl = '';
-          } else if(imgRef.startsWith('spotify:')){
-            // spotify cover fallback (we already have spotify section), skip
-            iconUrl = '';
-          } else {
-            // sometimes large_image contains a raw hash that can map to cdn for activity's application id.
-            iconUrl = ''; // leave blank (style will show neutral color)
-          }
-        }
-        // create inner
-        block.innerHTML = `
-          <div class="act-icon" style="${iconUrl ? `background-image:url('${iconUrl}');` : ''}"></div>
-          <div class="act-body">
-            <div class="name">${escapeHtml(act.name)}</div>
-            <div class="meta">${escapeHtml((act.details || act.state || '').toString())}</div>
+    function updateCartUI(){
+      // count
+      const count = Object.values(cart).reduce((s,i)=>s+i.qty,0);
+      cartCount.textContent = count;
+      // items
+      cartItems.innerHTML = '';
+      let total = 0;
+      Object.values(cart).forEach(item=>{
+        total += item.qty * item.price;
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
+          <img src="${item.img}" alt="${item.title}">
+          <div style="flex:1">
+            <div style="font-weight:600">${item.title}</div>
+            <div style="color:var(--muted);font-size:13px">${item.price} ₺ x ${item.qty}</div>
+          </div>
+          <div class="qty">
+            <button data-action="dec" data-id="${item.id}" class="btn secondary">-</button>
+            <div style="min-width:20px;text-align:center">${item.qty}</div>
+            <button data-action="inc" data-id="${item.id}" class="btn">+</button>
           </div>
         `;
-        activitiesEl.appendChild(block);
+        cartItems.appendChild(row);
       });
-
-      if(!hasAny){
-        noActivityEl.style.display = 'block';
-      } else {
-        noActivityEl.style.display = 'none';
-      }
-
-      // last updated
-      lastUpdatedEl.textContent = ``;
+      cartTotal.textContent = total + ' ₺';
     }
 
-    // escape simple HTML to avoid injection from external data
-    function escapeHtml(s){
-      if(!s && s !== 0) return '';
-      return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
-    }
-
-    // Lanyard websocket protocol: on open we should listen for HELLO messages and then send subscribe
-    socket.addEventListener('open', ()=> {
-      console.log('Lanyard socket opened');
-    });
-
-    socket.addEventListener('message', (ev)=> {
-      let payload;
-      try { payload = JSON.parse(ev.data); } catch(e){ return; }
-      const op = payload.op;
-      // op 1 = hello contains heartbeat_interval
-      if(op === 1 && payload.d && payload.d.heartbeat_interval){
-        const intervalMs = payload.d.heartbeat_interval;
-        if(heartbeatInterval) clearInterval(heartbeatInterval);
-        heartbeatInterval = setInterval(()=> socket.send(JSON.stringify({op:3})), intervalMs);
-        // subscribe
-        socket.send(JSON.stringify({op:2, d:{ subscribe_to_id: DISCORD_USER_ID }}));
-        return;
+    // Event delegation: sepete ekle
+    document.body.addEventListener('click', e=>{
+      const add = e.target.closest('button[data-id]');
+      if(add){
+        const id = Number(add.dataset.id);
+        const p = products.find(x=>x.id===id);
+        if(cart[id]) cart[id].qty +=1; else cart[id] = {...p,qty:1};
+        updateCartUI();
+        // kısa bildirim
+        add.textContent = 'Eklendi ✓';
+        setTimeout(()=> add.textContent = 'Sepete Ekle',900);
       }
-      // presence events come as t: "INIT_STATE" or "PRESENCE_UPDATE" and data in d
-      if(payload.t === 'INIT_STATE' || payload.t === 'PRESENCE_UPDATE'){
-        const presence = payload.d;
-        renderPresence(presence);
+
+      // cart drawer toggle
+      if(e.target.id === 'openCart'){
+        cartDrawer.classList.toggle('open');
+        cartDrawer.setAttribute('aria-hidden', String(!cartDrawer.classList.contains('open')));
       }
-      // handle disconnects or errors silently; Lanyard may also send HEARTBEAT_ACK etc.
-    });
 
-    socket.addEventListener('close', ()=> {
-      console.warn('Socket closed — yeniden bağlanma deneniyor 5s sonra');
-      setTimeout(()=> { location.reload(); }, 5000);
-    });
-
-    socket.addEventListener('error', (e)=> {
-      console.error('WebSocket error', e);
-    });
-
-    // initial fallback: fetch last known presence from Lanyard REST as fallback (optional)
-    // helps when WS handshake delayed. We'll fetch once.
-    (async function fetchOnce(){
-      try{
-        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
-        const json = await res.json();
-        if(json && json.success && json.data){
-          renderPresence(json.data);
-        }
-      }catch(err){
-        console.warn('Lanyard REST fetch failed', err);
+      // qty butonları
+      const qtyBtn = e.target.closest('button[data-action]');
+      if(qtyBtn){
+        const id = Number(qtyBtn.dataset.id);
+        if(qtyBtn.dataset.action === 'inc') cart[id].qty +=1;
+        if(qtyBtn.dataset.action === 'dec') { cart[id].qty -=1; if(cart[id].qty<=0) delete cart[id]; }
+        updateCartUI();
       }
-    })();
 
+      // clear cart
+      if(e.target.id === 'clearCart'){
+        for(const k in cart) delete cart[k];
+        updateCartUI();
+      }
+
+      // checkout (demo)
+      if(e.target.id === 'checkoutBtn'){
+        if(Object.keys(cart).length===0){ alert('Sepetin boş!'); return; }
+        const total = Object.values(cart).reduce((s,i)=>s+i.price*i.qty,0);
+        alert('Demo ödeme sayfasına yönlendiriliyorsun. Toplam: ' + total + ' ₺');
+      }
+    });
+
+    // Search
+    document.getElementById('search').addEventListener('input', e=>{
+      const q = e.target.value.trim().toLowerCase();
+      if(!q) renderProducts(products);
+      else renderProducts(products.filter(p=>p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)));
+    });
+
+    // İlk render
+    renderProducts(products);
+    updateCartUI();
   </script>
 </body>
 </html>
