@@ -8,6 +8,7 @@
 </head>
 <body class="bg-gray-100">
   <div class="container mx-auto p-6">
+
     <h1 class="text-3xl font-bold mb-6 text-center">Havalı Admin Panel</h1>
 
     <!-- Login Form -->
@@ -19,14 +20,15 @@
 
     <!-- Admin Panel -->
     <div id="adminPanel" class="hidden">
+
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Anılarım</h2>
         <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Çıkış Yap</button>
       </div>
 
-      <!-- Yeni Anı / Klasör Oluştur -->
+      <!-- Yeni Klasör -->
       <div class="mb-4">
-        <input type="text" id="newMemory" placeholder="Yeni Anı Adı" class="border p-2 rounded mr-2">
+        <input type="text" id="newMemory" placeholder="Yeni Klasör Adı" class="border p-2 rounded mr-2">
         <button id="createMemoryBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Oluştur</button>
       </div>
 
@@ -36,6 +38,7 @@
       <!-- Grid -->
       <div id="memoryGrid" class="grid grid-cols-3 gap-4"></div>
     </div>
+
   </div>
 
   <script type="module" src="cloudinaryConfig.js"></script>
