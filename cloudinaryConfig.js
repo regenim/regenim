@@ -1,2 +1,2 @@
 export const CLOUD_NAME = "doyzidlxu";
-export const UPLOAD_PRESET = "zahid";
+export const UPLOAD_PRESET = "admin_upload";
