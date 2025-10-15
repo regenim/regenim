@@ -1,33 +1,48 @@
 <!DOCTYPE html>
 <html>
-<head><title>Admin Panel</title></head>
+<head>
+  <title>Admin Panel</title>
+</head>
 <body>
-<h2>Dosya Yükle</h2>
-<input type="file" id="fileInput" multiple><br><br>
-<div id="uploaded"></div>
+  <h2>Dosya Yükle</h2>
+  <input type="file" id="fileInput" multiple><br><br>
+  <div id="uploaded"></div>
+  <button id="logoutBtn">Çıkış Yap</button>
 
-<script>
-const CLOUD_NAME = "doyzidlxu";
-const UPLOAD_PRESET = "zahid";
+  <script>
+    // Giriş kontrolü
+    if(localStorage.getItem("loggedIn") !== "true"){
+      window.location.href = "login.html";
+    }
 
-document.getElementById("fileInput").addEventListener("change", async (e) => {
-  const files = e.target.files;
-  const uploaded = document.getElementById("uploaded");
-
-  for (const file of files) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
-      method: "POST",
-      body: formData
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("loggedIn");
+      window.location.href = "login.html";
     });
 
-    const data = await res.json();
-    uploaded.innerHTML += `<p><a href="${data.secure_url}" target="_blank">${file.name}</a></p>`;
-  }
-});
-</script>
+    // Cloudinary bilgileri
+    const CLOUD_NAME = "doyzidlxu";       // Cloudinary dashboard
+    const UPLOAD_PRESET = "zahid"; // Cloudinary dashboard → unsigned preset
+
+    const fileInput = document.getElementById("fileInput");
+    const uploaded = document.getElementById("uploaded");
+
+    fileInput.addEventListener("change", async (e) => {
+      const files = e.target.files;
+      for(const file of files){
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        uploaded.innerHTML += `<p><a href="${data.secure_url}" target="_blank">${file.name}</a></p>`;
+      }
+    });
+  </script>
 </body>
 </html>
