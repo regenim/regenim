@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><title>Admin Panel</title></head>
+<body>
+<h2>Dosya Yükle</h2>
+<input type="file" id="fileInput" multiple><br><br>
+<div id="uploaded"></div>
+
+<script>
+const CLOUD_NAME = "BURAYA_CLOUD_NAME";
+const UPLOAD_PRESET = "BURAYA_UPLOAD_PRESET";
+
+document.getElementById("fileInput").addEventListener("change", async (e) => {
+  const files = e.target.files;
+  const uploaded = document.getElementById("uploaded");
+
+  for (const file of files) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+    uploaded.innerHTML += `<p><a href="${data.secure_url}" target="_blank">${file.name}</a></p>`;
+  }
+});
+</script>
+</body>
+</html>
