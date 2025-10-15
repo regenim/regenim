@@ -13,13 +13,13 @@ const createMemoryBtn = document.getElementById("createMemoryBtn");
 const fileInput = document.getElementById("fileInput");
 const memoryGrid = document.getElementById("memoryGrid");
 
-// Giriş kontrolü
+// Login kontrol
 if(localStorage.getItem("loggedIn") === "true") {
   loginForm.classList.add("hidden");
   adminPanel.classList.remove("hidden");
 }
 
-// Login
+// Giriş
 loginBtn.addEventListener("click", () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -34,13 +34,13 @@ loginBtn.addEventListener("click", () => {
   }
 });
 
-// Logout
+// Çıkış
 logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("loggedIn");
   location.reload();
 });
 
-// Yeni Anı / Klasör oluştur (sadece front-end için)
+// Yeni Klasör Oluştur
 createMemoryBtn.addEventListener("click", () => {
   const memoryName = newMemoryInput.value.trim();
   if(!memoryName) return alert("Lütfen bir isim girin.");
@@ -51,11 +51,11 @@ createMemoryBtn.addEventListener("click", () => {
   newMemoryInput.value = "";
 });
 
-// Dosya yükleme
+// Dosya Yükleme
 fileInput.addEventListener("change", async (e) => {
   const files = e.target.files;
   const currentMemory = memoryGrid.lastElementChild?.querySelector(".files");
-  if(!currentMemory) return alert("Önce bir anı oluşturun!");
+  if(!currentMemory) return alert("Önce bir klasör oluşturun!");
 
   for(const file of files){
     const formData = new FormData();
