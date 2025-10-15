@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Havalı Admin Panel</h1>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="max-w-sm mx-auto bg-white p-6 rounded shadow">
+      <input type="email" id="email" placeholder="E-posta" class="border p-2 w-full mb-4 rounded">
+      <input type="password" id="password" placeholder="Şifre" class="border p-2 w-full mb-4 rounded">
+      <button id="loginBtn" class="bg-blue-500 text-white p-2 w-full rounded hover:bg-blue-600">Giriş Yap</button>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Anılarım</h2>
+        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Çıkış Yap</button>
+      </div>
+
+      <!-- Yeni Anı / Klasör Oluştur -->
+      <div class="mb-4">
+        <input type="text" id="newMemory" placeholder="Yeni Anı Adı" class="border p-2 rounded mr-2">
+        <button id="createMemoryBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Oluştur</button>
+      </div>
+
+      <!-- Dosya Yükleme -->
+      <input type="file" id="fileInput" multiple class="mb-4">
+
+      <!-- Grid -->
+      <div id="memoryGrid" class="grid grid-cols-3 gap-4"></div>
+    </div>
+  </div>
+
+  <script type="module" src="cloudinaryConfig.js"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
